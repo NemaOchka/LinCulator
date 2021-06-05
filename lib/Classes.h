@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
+#include <cctype>
 
 class Fraction {
 public:
@@ -30,10 +31,10 @@ public:
 };
 
 class Matrix {
-   int i_size, j_size;
-   std::vector <std::vector <Fraction>> matrix;
-
 public:
+    int i_size, j_size;
+    std::vector <std::vector <Fraction>> matrix;
+
     Matrix();
     Matrix(int i_size, int j_size, std::vector <std::vector <Fraction>> matrix);
     Matrix(Matrix& temp);
@@ -42,6 +43,7 @@ public:
     Matrix operator+ (const Matrix& a);
     Matrix operator- (const Matrix& a);
     Matrix operator* (const Matrix& a);
+    friend Matrix operator* (Fraction& a, Matrix& b);
     friend std::ostream& operator<< (std::ostream& out, Matrix& temp);
     friend std::istream& operator>> (std::istream& in, Matrix& temp);
 
@@ -49,6 +51,7 @@ public:
     Fraction determinant();
     Matrix transpose();
     Matrix inverse();
+    Matrix Gaussian_Method();
 };
 
 

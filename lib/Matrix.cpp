@@ -84,6 +84,18 @@ Matrix Matrix::operator* (const Matrix &a) {
     return temp;
 }
 
+Matrix operator* (Fraction& a, Matrix& b) {
+    Matrix temp(b);
+
+    for (int i = 0; i <= temp.j_size; i++) {
+        for (int j = 0; j <= temp.j_size; j++) {
+            temp.matrix[i][j] = a * temp.matrix[i][j];
+        }
+    }
+
+    return temp;
+}
+
 std::ostream& operator<< (std::ostream& out, Matrix& temp) {
     int len = 3;
     for (int i = 0; i <= temp.i_size; i++) {
@@ -208,6 +220,14 @@ Matrix Matrix::inverse() {
             }
         }
     }
+
+    return temp;
+}
+
+Matrix Matrix::Gaussian_Method() {
+    Matrix temp(*this);
+
+
 
     return temp;
 }
