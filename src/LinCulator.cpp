@@ -1,19 +1,18 @@
 #include "../lib/Classes.h"
 
 // Пофіксити:
-// - при виводі через std::cout не можна використовувати методи користувацьких класів (те ж саме при використанні return)
-// зробити перевірку на коректність вводу данних користувача в main
+// зробити перевірку на коректність вводу данних користувача в language та task
+// cout матриць в Gaussian_Method()
 
-
-// Написати програму яка буде знаходи Нормальну Жорданову Форму Матриці, отримуючи на вхід тільки матриці лінійного оператора
-// Написати клас Matrix, Frac (математичні дроби) та їх відповідні методи
-// Описати роботу програми із змінними (знаходження власно числа) та в системі лінійних рівнянь
-
-
+int g_language, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
 
-    // Ранг мариці
+    // Переписати розроблені методи із чітким поясненням
+    // Написати фукції гетери
+
+    // Перевірити систему на ЛНЗ
+    // Знайти базис
     // Ядро та образ лінійного оператора
     // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
     // базис суми та перетину підпросторів
@@ -29,48 +28,139 @@ int main() {
     // Знайти матрицю спряженого оператора
     // Побудувати ортонормаваний базис із влачних векторів
 
+    system("clear");
     std::cout << "Choose youe language: \nEN - 1 \nUA - 2 \n";
-    int language;
-    std::cin >> language;
-    if (language != 1 && language != 2) {
+    std::cin >> g_language;
+    if (g_language != 1 && g_language != 2) {
         std::cout << "Enter correct answer! \n";
-        std::cin >> language;
+        std::cin >> g_language;
     }
     std::system("clear");
 
-    if (language == 1) {
-        // eng translate
+    while (1) {
+        if (g_language == 1) {
+            std::cout << "Choose your task: \n"
+                "1) solve a SLAE by the Gaussian method \n"
+                "2) find a determinant of the matrix \n"
+                "3) find an inverse matrix \n"
+                "4) fing a rank of the matrix \n"
+
+                "\n0) exit \n";
+        }
+        else {
+            std::cout << "Вибири свою задачу: \n"
+                "1) вирішити СЛАР методом Гауса \n"
+                "2) знайти визначник матриці \n"
+                "3) знайти обернену матрицю \n"
+                "4) знайти ранг матриці \n"
+
+                "\n0) вийти \n";
+        }
+
+        int task;
+        std::cin >> task;
+        std::system("clear");
+        switch (task) {
+            case 0: {
+                std::cout << "\n";
+                return 0;
+            }; break;
+
+            case 1: {
+                if (g_language == 1) {
+                    std::cout << "Enter the coefficients of extended SLAE in the form of a matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть коефіцієенти розширеної СЛАР у вигляді матриці: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                if (g_language == 1) {
+                    std::cout << "\nThe solve: \n";
+                }
+                else {
+                    std::cout << "\nРішення: \n";
+                }
+                std::cout << matrix.Gaussian_Method();
+
+                /*
+                std::vector <Matrix> answer = matrix.Gaussian_Method();
+                for (unsigned long i = 0; i < answer.size(); i++) {
+                    std::cout << "\n" << answer[i];
+                }*/
+            }; break;
+
+            case 2: {
+                if (g_language == 1) {
+                    std::cout << "Enter dimensions of the matrix and this matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть розмірність матриці та саму матрицю: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                Fraction determinant = matrix.determinant();
+                if (g_language == 1) {
+                    std::cout << "The determinant of this matrix is equel: " << determinant << std::endl;
+                }
+                else {
+                    std::cout << "Визначник цієї матриці дорівнює: " << determinant << std::endl;
+                }
+            } break;
+
+            case 3: {
+                if (g_language == 1) {
+                    std::cout << "Enter dimensions of the matrix and this matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть розмірність матриці та саму матрицю: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                if (g_language == 1) {
+                    std::cout << "The inverse matrix looks like: \n";
+                }
+                else {
+                    std::cout << "Обернена матриця має такий вигляд: \n";
+                }
+                std::cout << matrix.inverse();
+            }; break;
+
+            case 4: {
+                if (g_language == 1) {
+                    std::cout << "Enter dimensions of the matrix and this matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть розмірність матриці та саму матрицю: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                if (g_language == 1) {
+                    std::cout << "\nThe solve: \n";
+                }
+                else {
+                    std::cout << "\nРішення: \n";
+                }
+                std::cout << matrix.rank() << "\n";
+            }; break;
+        }
+
+        if (g_error) {
+            if (g_language == 1) {
+                std::cout << "\nSeems like somewhere occured a mistake. Please, check your input data! \n";
+            }
+            else {
+                std::cout << "\nВиглядає ніби десь трапилась помилка, перегляньте корекність вводу данних! \n";
+            }
+        }
+
+        if (g_language == 1) {
+            std::cout << "\nPress ENTER to come back... \n";
+        }
+        else {
+            std::cout << "\nЩоб повернутися, натисніть ENTER... \n";
+        }
+        system("read");
+        system("clear");
     }
-    else {
-        std::cout << "Вибири свою задачу: \n"
-            "1) перевірити систему на ЛНЗ \n"
-            "2) Вирішити СЛАР методлм Гауса \n"
-            "3) знайти детермінант \n"
-            "4) знайти базис \n"
-            "5) знайти обернену матрицю \n";
-    }
-    int task;
-    std::cin >> task;
-    std::system("clear");
-
-    switch (task) {
-        case 1: {
-
-        }; break;
-        case 2: {
-
-        } break;
-        case 3: {
-
-        }; break;
-        case 4: {
-
-        } break;
-        case 5: {
-
-        } break;
-    }
-
-    std::cout << "\n";
-    return 0;
 }

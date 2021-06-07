@@ -1,5 +1,7 @@
 #include "./Classes.h"
 
+extern int g_language, g_error;
+
 Fraction::Fraction() {
     numerator = 0;
     denominator = 1;
@@ -29,41 +31,55 @@ Fraction& Fraction::operator= (const Fraction& a) {
     return *this;
 }
 
+bool Fraction::operator!= (const Fraction &a) {
+
+    return !(numerator == a.numerator && denominator == a.denominator);
+}
+
 Fraction Fraction::operator+ (const Fraction& a) {
     Fraction temp(*this);
     temp.numerator = temp.numerator * a.denominator + a.numerator * temp.denominator;
     temp.denominator *= a.denominator;
-    temp.GCD();
-    return temp;
+
+    return temp.GCD();
 }
 
 Fraction Fraction::operator- (const Fraction& a) {
     Fraction temp(*this);
     temp.numerator = temp.numerator * a.denominator - a.numerator * temp.denominator;
     temp.denominator *= a.denominator;
-    temp.GCD();
-    return temp;
+
+    return temp.GCD();
 }
 
 Fraction Fraction::operator* (const Fraction &a) {
     Fraction temp(*this);
     temp.numerator *= a.numerator;
     temp.denominator *= a.denominator;
-    temp.GCD();
 
-    return  temp;
+    return  temp.GCD();
 }
 
 Fraction Fraction::operator/ (const Fraction &a) {
     Fraction temp(*this);
-    temp.numerator *= a.denominator;
-    temp.denominator *= a.numerator;
-    temp.GCD();
+    if (a.numerator != 0) {
+        temp.numerator *= a.denominator;
+        temp.denominator *= a.numerator;
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "Error!! You cannot divide by zero. \n";
+        }
+        else {
+            std::cout << "Помилка!! Ділення на нуль. \n";
+        }
+        g_error = 1;
+    }
 
-    return temp;
+    return temp.GCD();
 }
 
-std::ostream& operator<< (std::ostream& out, Fraction& temp) {
+std::ostream& operator<< (std::ostream& out, const Fraction& temp) {
     if (temp.numerator == 0) {
         out << temp.numerator;
     }
@@ -102,7 +118,12 @@ again:
     fr2 >> temp.denominator;
 
     if (temp.denominator == 0) {
-        std::cout << "Incorrect value!! Try again. \n";
+        if (g_language == 1) {
+            std::cout << "Incorrect value!! Try again. \n";
+        }
+        else {
+            std::cout << "Некоректне значення!! Спробуйте ще раз. \n";
+        }
         fract1.clear();
         fract2.clear();
         goto again;
@@ -114,17 +135,18 @@ again:
 
 Fraction Fraction::GCD() {
     int gcd = 1;
+
+    if ((numerator < 0 || numerator > 0) && denominator < 0) {
+        numerator *= -1;
+        denominator *= -1;
+    }
+
     for (int i = 1; i <= denominator; i++) {
         if (numerator % i == 0 && denominator % i == 0) {
         gcd = i;
         }
     }
     Fraction fr(numerator /= gcd, denominator /= gcd);
-
-    if ((numerator < 0 || numerator > 0) && denominator < 0) {
-        numerator *= -1;
-        denominator *= -1;
-    }
 
     return fr;
 }
