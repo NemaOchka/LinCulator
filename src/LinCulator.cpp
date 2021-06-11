@@ -7,9 +7,7 @@
 int g_language, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-
     // Переписати розроблені методи із чітким поясненням
-    // Написати фукції гетери
 
     // Перевірити систему на ЛНЗ
     // Знайти базис
@@ -81,7 +79,7 @@ int main() {
                 else {
                     std::cout << "\nРішення: \n";
                 }
-                std::cout << matrix.Gaussian_Method();
+                matrix.Gaussian_Method();
 
                 /*
                 std::vector <Matrix> answer = matrix.Gaussian_Method();
@@ -101,10 +99,10 @@ int main() {
                 std::cin >> matrix;
                 Fraction determinant = matrix.determinant();
                 if (g_language == 1) {
-                    std::cout << "The determinant of this matrix is equel: " << determinant << std::endl;
+                    std::cout << "\nThe determinant of this matrix is equel: " << determinant << std::endl;
                 }
                 else {
-                    std::cout << "Визначник цієї матриці дорівнює: " << determinant << std::endl;
+                    std::cout << "\nВизначник цієї матриці дорівнює: " << determinant << std::endl;
                 }
             } break;
 
@@ -118,12 +116,14 @@ int main() {
                 Matrix matrix;
                 std::cin >> matrix;
                 if (g_language == 1) {
-                    std::cout << "The inverse matrix looks like: \n";
+                    std::cout << "\nThe solution: \n";
                 }
                 else {
-                    std::cout << "Обернена матриця має такий вигляд: \n";
+                    std::cout << "\nРішення: \n";
                 }
-                std::cout << matrix.inverse();
+                std::cout << "\nA = \n";
+                std::cout << matrix;
+                matrix.inverse();
             }; break;
 
             case 4: {

@@ -152,7 +152,7 @@ std::ostream& operator<< (std::ostream& out, const Matrix& a) {
             for (int k = 0; k < len - temp.matrix[i][j].lenth() + 2; k++) {
                 out << " ";
             }
-            if (temp.matrix[i][j].numerator == 0 || temp.matrix[i][j].denominator == 1) out << "  ";
+            if (temp.matrix[i][j].get_numerator() == 0 || temp.matrix[i][j].get_denominator() == 1) out << "  ";
             out << temp.matrix[i][j];
         }
         out << " | \n";
@@ -190,6 +190,21 @@ std::istream& operator>> (std::istream& in, Matrix& temp) {
     return in;
 }
 
+int Matrix::get_i_size() {
+
+    return i_size;
+}
+
+int Matrix::get_j_size() {
+
+    return j_size;
+}
+
+std::vector <std::vector <Fraction>> Matrix::get_matrix() {
+
+    return matrix;
+}
+
 Matrix Matrix::Gaussian_Method() {
     Matrix temp(*this);
 
@@ -199,10 +214,10 @@ Matrix Matrix::Gaussian_Method() {
     //}
     for (int i = 0, k = 0; (i <= temp.i_size) && (k <= temp.j_size ); i++, k++) {
         start:
-        if (temp.matrix[i][k].numerator == 0) {
+        if (temp.matrix[i][k].get_numerator() == 0) {
             int all_column_zero = 1;
             for (int g = i + 1; g <= temp.i_size && all_column_zero; g++) {
-                if (temp.matrix[g][k].numerator != 0) {
+                if (temp.matrix[g][k].get_numerator() != 0) {
                     std::vector <Fraction> buff = temp.matrix[g];
                     temp.matrix[g] = temp.matrix[i];
                     temp.matrix[i] = buff;
@@ -244,6 +259,7 @@ Matrix Matrix::Gaussian_Method() {
         //}
     }
 
+    /*
     int rank = i_size;
     for (int i = i_size; i >= 0; i--) {
         Fraction sum;
@@ -255,7 +271,6 @@ Matrix Matrix::Gaussian_Method() {
         }
     }
 
-    /*
     std::vector <Matrix> answer;
     if (rang == j_size - 1) {
         std::vector <Fraction> coordinats;
@@ -318,7 +333,7 @@ Matrix Matrix::minor (int i, int j) {
 }
 
 Fraction Matrix::determinant() {
-    Fraction determinat;
+    Fraction determinant;
 
     if (i_size != j_size) {
         if (g_language == 1) {
@@ -331,21 +346,18 @@ Fraction Matrix::determinant() {
     }
     else {
         if (i_size == 0 && j_size == 0) {
-            determinat = matrix[0][0];
-        }
-        else if (i_size == 1 && j_size == 1) {
-            determinat = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+            determinant = matrix[0][0];
         }
         else {
             for (int j = 0; j <= j_size; j++) {
                 Fraction fr(-1, 1);
                 fr = Math::pow(fr, j+2);
-                determinat = determinat + fr * matrix[0][j] * this->minor(0, j).determinant();
+                determinant = determinant + fr * matrix[0][j] * this->minor(0, j).determinant();
             }
         }
     }
 
-    return determinat;
+    return determinant;
 }
 
 Matrix Matrix::transpose() {
@@ -368,7 +380,7 @@ Matrix Matrix::inverse() {
     Matrix temp(*this), trans = this->transpose();
     Fraction determ = this->determinant();
 
-    if (determ.numerator == 0 ) {
+    if (determ.get_numerator() == 0 ) {
         if (g_language == 1) {
         std::cout << "Error!! Inverse matrix cannot be found cause of determinant is equal to zero. \n";
         }
@@ -378,14 +390,38 @@ Matrix Matrix::inverse() {
         g_error = 1;
     }
     else {
-    for (int i = 0; i <= temp.i_size; i++) {
+        //{
+        std::cout << "\nA' = 1/det(A) * (-1)^(i + j) * \n";
+        for (int i = 0; i <= this->get_i_size(); i++) {
+            std::cout << "|";
+            for (int j = 0; j <= this->get_j_size(); j++) {
+                std::cout << " A[" << j << "][" << i << "]";
+            }
+            std::cout << "|\n";
+        }
+        //}
+        std::cout << "\ndet(A) = " << this->determinant() << "\n\n";
+        for (int i = 0; i <= temp.i_size; i++) {
             Fraction fr(1, 1);
             for (int j = 0; j <= temp.j_size; j++) {
                 Fraction fr2(-1, 1);
                 fr2 = Math::pow(fr2, i + j);
                 temp.matrix[i][j] = fr / determ * fr2 * trans.minor(i, j).determinant();
+                //{
+                std::cout << "A[" << j << "][" << i << "] = \n" << trans.minor(i, j);
+                std::cout << "det(A[" << j << "][" << i << "])  =" << trans.minor(i, j).determinant() << "\n\n";
+                //}
             }
         }
+        //{
+        if (g_language == 1) {
+            std::cout << "The inverse matrix looks like: \n";
+        }
+        else {
+            std::cout << "Обернена матриця має такий вигляд: \n";
+        }
+        std::cout << temp;
+        //}
     }
 
     return temp;
@@ -394,56 +430,7 @@ Matrix Matrix::inverse() {
 int Matrix::rank() {
     Matrix temp(*this);
 
-    //{
-    Matrix check(*this);
-    std::cout << "\n" << temp;
-    //}
-    for (int i = 0, k = 0; (i <= temp.i_size) && (k <= temp.j_size ); i++, k++) {
-        start:
-        if (temp.matrix[i][k].numerator == 0) {
-            int all_column_zero = 1;
-            for (int g = i + 1; g <= temp.i_size && all_column_zero; g++) {
-                if (temp.matrix[g][k].numerator != 0) {
-                    std::vector <Fraction> buff = temp.matrix[g];
-                    temp.matrix[g] = temp.matrix[i];
-                    temp.matrix[i] = buff;
-                    all_column_zero = 0;
-                 }
-             }
-             if (all_column_zero) {
-                k++;
-                goto start;
-             }
-        }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
-        }
-        //}
-        Fraction row_divider = temp.matrix[i][k];
-        for (int j = k; j <= temp.j_size; j++) {
-             temp.matrix[i][j] = temp.matrix[i][j] / row_divider;
-        }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
-        }
-        //}
-        for (int h = i + 1; h <= temp.i_size; h++) {
-            Fraction row_multiplier = temp.matrix[h][k];
-            for (int j = k; j <= temp.j_size; j++) {
-                temp.matrix[h][j] = temp.matrix[h][j] - row_multiplier * temp.matrix[i][j];
-            }
-        }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
-        }
-        //}
-    }
+    temp = temp.Gaussian_Method();
 
     int rank = i_size + 1;
     for (int i = i_size; i >= 0; i--) {
@@ -451,7 +438,7 @@ int Matrix::rank() {
         for (int j = 0; j <= j_size; j++) {
             sum = sum + Math::pow(temp.matrix[i][j], 2);
         }
-        if (sum.numerator == 0) {
+        if (sum.get_numerator() == 0) {
             rank--;
         }
     }

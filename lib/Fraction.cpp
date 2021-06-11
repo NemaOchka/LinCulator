@@ -133,6 +133,24 @@ again:
     return in;
 }
 
+int Fraction::get_numerator() {
+
+    return this->numerator;
+}
+
+int Fraction::get_denominator() {
+
+    return this->denominator;
+}
+
+void Fraction::set_numerator(int a) {
+    numerator = a;
+}
+
+void Fraction::set_denominator(int a) {
+    denominator = a;
+}
+
 Fraction Fraction::GCD() {
     int gcd = 1;
 
