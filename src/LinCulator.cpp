@@ -7,10 +7,8 @@
 int g_language, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // Переписати розроблені методи із чітким поясненням
+    // Переписати розроблені методи із чітким поясненням (визначник + Гауса)
 
-    // Перевірити систему на ЛНЗ
-    // Знайти базис
     // Ядро та образ лінійного оператора
     // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
     // базис суми та перетину підпросторів
@@ -42,6 +40,8 @@ int main() {
                 "2) find a determinant of the matrix \n"
                 "3) find an inverse matrix \n"
                 "4) fing a rank of the matrix \n"
+                "5) check the system for linear independence \n"
+                "6) find the basis of the system \n"
 
                 "\n0) exit \n";
         }
@@ -51,6 +51,8 @@ int main() {
                 "2) знайти визначник матриці \n"
                 "3) знайти обернену матрицю \n"
                 "4) знайти ранг матриці \n"
+                "5) перевірити систему на лінійну незалежність \n"
+                "6) знайти базис системи \n"
 
                 "\n0) вийти \n";
         }
@@ -97,7 +99,7 @@ int main() {
                 }
                 Matrix matrix;
                 std::cin >> matrix;
-                Fraction determinant = matrix.determinant();
+                Fraction determinant = Math::Determinant_with_explanation(matrix);
                 if (g_language == 1) {
                     std::cout << "\nThe determinant of this matrix is equel: " << determinant << std::endl;
                 }
@@ -143,6 +145,30 @@ int main() {
                 }
                 std::cout << matrix.rank() << "\n";
             }; break;
+
+            case 5: {
+                if (g_language == 1) {
+                    std::cout << "Enter the vectors of the system as a matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть вектори системи як матрицю: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                matrix.linear_independence();
+            }; break;
+
+            case 6: {
+                if (g_language == 1) {
+                    std::cout << "Enter the vectors of the system as a matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть вектори системи як матрицю: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                std::cout << matrix.basis();
+            }; break;
         }
 
         if (g_error) {
@@ -152,6 +178,7 @@ int main() {
             else {
                 std::cout << "\nВиглядає ніби десь трапилась помилка, перегляньте корекність вводу данних! \n";
             }
+            g_error = 0;
         }
 
         if (g_language == 1) {

@@ -56,16 +56,26 @@ public:
     int get_i_size();
     int get_j_size();
     std::vector <std::vector <Fraction>> get_matrix();
+    void set_i_size(int i);
+    void set_j_size(int j);
+    void set_matrix(std::vector <std::vector <Fraction>> mat);
+    void set_matrix(int i, std::vector <Fraction> row);
+    void set_matrix(int i, int j, Fraction a);
     Matrix Gaussian_Method();
     Matrix minor(int i, int j);
     Fraction determinant();
     Matrix transpose();
     Matrix inverse();
     int rank();
+    bool linear_independence();
+    Matrix basis();
 };
 
 namespace Math {
     Fraction pow(Fraction a, int b);
+    //{
+    Fraction Determinant_with_explanation(Matrix temp);
+    //}
 }
 
 #endif

@@ -205,6 +205,48 @@ std::vector <std::vector <Fraction>> Matrix::get_matrix() {
     return matrix;
 }
 
+void Matrix::set_i_size (int i) {
+    i_size = i;
+}
+
+void Matrix::set_j_size (int j) {
+    j_size = j;
+}
+
+void Matrix::set_matrix (std::vector<std::vector<Fraction>> mat) {
+    if (((unsigned)i_size == mat.size() - 1) && ((unsigned)j_size == mat[0].size() - 1))  {
+        matrix = mat;
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "Error!! Dimensions do not match. \n";
+        }
+        else {
+            std::cout << "Помилка!! Розмірності не співпадають. \n";
+        }
+        g_error = 1;
+    }
+}
+
+void Matrix::set_matrix (int i, std::vector<Fraction> row) {
+    if ((unsigned)j_size == row.size() - 1) {
+        matrix[i] = row;
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "Error!! Dimensions do not match. \n";
+        }
+        else {
+            std::cout << "Помилка!! Розмірності не співпадають. \n";
+        }
+        g_error = 1;
+    }
+}
+
+void Matrix::set_matrix (int i, int j, Fraction a) {
+    matrix[i][j] = a;
+}
+
 Matrix Matrix::Gaussian_Method() {
     Matrix temp(*this);
 
@@ -452,4 +494,65 @@ int Matrix::rank() {
     //}
 
     return rank;
+}
+
+bool Matrix::linear_independence() {
+    int rank = this->rank();
+    //{
+    std::cout << rank << "\n";
+    //}
+
+    if (rank == this->get_j_size() + 1) {
+        //{
+        if (g_language == 1) {
+            std::cout << "\n Rank = j demension. \nThe system is linearly independent. \n";
+        }
+        else {
+            std::cout << "\nРанг = розмірності j. \nСистема лінйно незалежна. \n";
+        }
+        //}
+
+        return true;
+    }
+    else {
+        //{
+        if (g_language == 1) {
+            std::cout << "\nRank ≠ j demension. \nThe system is linearly dependent. \n";
+        }
+        else {
+            std::cout << "\nРанг ≠ розмірності j. \nСистема лінійно залежна. \n";
+        }
+        //}
+
+        return false;
+    }
+}
+
+Matrix Matrix::basis() {
+    std::vector <std::vector <Fraction>> mat;
+
+    int rank = this->rank();
+    //{
+    std::cout << rank << "\n";
+    //}
+
+    for (int i = 0; i <= this->get_i_size(); i++) {
+        std::vector <Fraction> buff;
+        for (int j = 0; j < rank; j++) {
+            buff.push_back(this->get_matrix()[i][j]);
+        }
+        mat.push_back(buff);
+        buff.clear();
+    }
+    Matrix temp(this->get_i_size(), rank - 1, mat);
+    //{
+    if (g_language == 1) {
+        std::cout << "\nTherefore, the basic vectors will be: \n";
+    }
+    else {
+        std::cout << "\nОтже, базисними векторами будуть: \n";
+    }
+    //}
+
+    return temp;
 }
