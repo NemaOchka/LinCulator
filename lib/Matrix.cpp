@@ -162,6 +162,7 @@ std::ostream& operator<< (std::ostream& out, const Matrix& a) {
 }
 
 std::istream& operator>> (std::istream& in, Matrix& temp) {
+start:
     in >> temp.i_size >> temp.j_size;
     temp.i_size--;
     temp.j_size--;
@@ -173,6 +174,7 @@ std::istream& operator>> (std::istream& in, Matrix& temp) {
         else {
             std::cout << "Розмірність матриці не може приймати негативне занчення! Спробуйте ще раз. \n";
         }
+        goto start;
     }
 
     std::vector <Fraction> b;
@@ -186,6 +188,8 @@ std::istream& operator>> (std::istream& in, Matrix& temp) {
         temp.matrix.push_back(b);
         b.clear();
     }
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     return in;
 }
@@ -247,6 +251,18 @@ void Matrix::set_matrix (int i, int j, Fraction a) {
     matrix[i][j] = a;
 }
 
+Matrix Matrix::main_matrix() {
+    Matrix temp(*this);
+    temp.j_size = temp.j_size - 1;
+    for (int i = 0; i <= i_size; i++) {
+        std::vector <Fraction> buff = temp.matrix[i];
+        buff.pop_back();
+        temp.set_matrix(i, buff);
+    }
+
+    return temp;
+}
+
 Matrix Matrix::Gaussian_Method() {
     Matrix temp(*this);
 
@@ -301,42 +317,132 @@ Matrix Matrix::Gaussian_Method() {
         //}
     }
 
-    /*
-    int rank = i_size;
-    for (int i = i_size; i >= 0; i--) {
-        Fraction sum;
-        for (int j = 0; j <= j_size; j++) {
-            sum = sum + Math::pow(temp.matrix[i][j], 2);
-        }
-        if (sum.numerator == 0) {
-            rank--;
-        }
-    }
+    return temp;
+}
 
+std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
     std::vector <Matrix> answer;
-    if (rang == j_size - 1) {
-        std::vector <Fraction> coordinats;
-        for (int i = rang; i >= 0; i--) {
-                Fraction sum = temp.matrix[i][j_size];
-                for (int k = j_size - 1; k > i; k--) {
-                    sum = sum - temp.matrix[i][k]*coordinats[k];
-                }
-                coordinats.insert(coordinats.begin(), sum);
+    Matrix temp = this->Gaussian_Method(), temp_main = this->main_matrix();
+    int rank = temp.rank();
+    //{
+    if (g_language == 1) {
+        std::cout << "\nThe rank of the matrix is equal to: " << rank << "; \nFind the rank of the main matrix: \n";
+    }
+    else {
+        std::cout << "\nРанг матриці дорівнює: " << rank << "; \nЗнайдемо ранг основної матриці: \n";
+    }
+    //}
+    int rank_main = temp_main.rank();
+    //{
+    if (g_language == 1) {
+        std::cout << "\nThe rank of the main matrix is equal to: " << rank_main << ";";
+    }
+    else {
+        std::cout << "\nРанг основої матриці дорівнює: " << rank_main << ";";
+    }
+    //}
+    if (rank != rank_main) {
+        //{
+        if (g_language == 1) {
+            std::cout << "\nSince the rank of the extended and basic matrices do not coincide, the ";
         }
-        Matrix vector(j_size - 1, 0, {coordinats});
-        answer.push_back(vector);
+        else {
+            std::cout << "\nОскільки ранг розширеної та основної матриці не співпадають, то ";
+        }
+        //}
+        if (g_language == 1) {
+            std::cout << "\nSystem has no solution. \n";
+        }
+        else {
+            std::cout << "\nСистема немає розв'язку. \n";
+        }
+        g_error = 1;
 
         return answer;
     }
-    else if (rang > j_size - 1) {
-
-    }
     else {
+        //{
+        if (g_language == 1) {
+            std::cout << "\nSince the rank of the extended and basic matrices coincide, the solution has the form: \n\n";
+        }
+        else {
+            std::cout << "\nОскільки ранг розширеної та основної матриці співпадають, то розв'язок має вигляд: \n\n";
+        }
+        for (int i = 1; i <= temp.get_j_size(); i++) {
+                std::cout << "| x" << i << " |";
+                if (i == (temp.get_j_size() + 1) / 2) {
+                std::cout << " = ";
+            }
+            std::cout << "\n";
+        }
+        //}
+        if (rank == temp.get_j_size()) {
+            std::vector <Fraction> vector;
+            for (int i = rank - 1; i >= 0; i--) {
+                Fraction sum = temp.get_matrix()[i][temp.get_j_size()];
+                for (int j = temp.get_j_size() - 1, k = 1; j > i; j--, k++) {
+                    sum = sum - temp.get_matrix()[i][j] * vector[vector.size() - k];
+                }
+                vector.insert(vector.begin(), sum);
+            }
+            Matrix mat (0, temp.get_j_size() - 1, {vector});
+            answer.insert(answer.begin(), mat.transpose());
+            //{
+            std::cout << "=\n" << answer[0];
+            //}
 
+            return answer;
+        } else {
+            for (int i = temp.get_j_size() - rank, r = 0; i >= 0; i--, r++) {
+                std::vector <Fraction> vector;
+                for (int t = temp.get_j_size() - rank; t > 0; t--) {
+                    if (t == temp.get_j_size() - rank + 1 - r) {
+                        vector.insert(vector.begin(), 1);
+                    }
+                    else {
+                        vector.insert(vector.begin(), 0);
+                    }
+                }
+                for (int k = rank - 1; k >= 0; k--) {
+                    Fraction buff = temp.get_matrix()[k][temp.get_j_size() - r];
+                    if (r) {
+                        Fraction fr(-1, 1);
+                        buff = buff * fr;
+                    }
+                    for (int g = 1; k + g < rank; g++) {
+                        buff = buff - temp.get_matrix()[k][k + g] * vector[g - 1];
+                    }
+                    vector.insert(vector.begin(), buff);
+                }
+
+                Matrix mat(0, temp.get_j_size() - 1, {vector});
+                answer.insert(answer.begin(), mat.transpose());
+            }
+            //{
+            std::cout << "= ";
+            for (unsigned int i = 0; i < answer.size(); i++) {
+                std::cout << "+ ";
+                if (i != answer.size() - 1) {
+                std::cout <<"x" << i + rank + 1 << " * ";
+                }
+                std::cout << "\n" << answer[i];
+            }
+            //}
+
+            return answer;
+
+            // Написати вивід результату для 2 випадків
+            // Передбачити коли змінна по діалоналі рівняється 0, тобто треба міняти місцями змінні (в обох випадках). Приклад:
+            // 6 4 2 4 1 2
+            // 0 3 0 1 4 1
+            // 0 2 0 1 5 0
+            //
+            // 9 8 7 6 5 4
+            // 1 2 3 4 5 6
+            // 3 4 5 6 7 8
+
+        }
     }
-    */
-
-    return temp;
 }
 
 Matrix Matrix::minor (int i, int j) {
@@ -366,9 +472,62 @@ Matrix Matrix::minor (int i, int j) {
             std::cout << "Error!! The dimention of the matrix is too low to take a minor. \n";
         }
         else {
-            std::cout << "помилка!! Розмірність матриці замала, щоб визначити мінор. \n";
+            std::cout << "Помилка!! Розмірність матриці замала, щоб визначити мінор. \n";
         }
         g_error = 1;
+    }
+
+    return temp;
+}
+
+Matrix Matrix::minor(std::vector<int> a, std::vector<int> b) {
+    Matrix temp(*this);
+    unsigned int a_s = a.size(), b_s = b.size();
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+    a.erase(std::unique(begin(a), end(a)), end(a));
+    b.erase(std::unique(begin(b), end(b)), end(b));
+    if (a.size() != a_s || b.size() != b_s) {
+        if (g_language == 1) {
+            std::cout << "Error!! Indices are repeated. \n";
+        }
+        else {
+            std::cout << "Помилка!! Індекси повторються. \n";
+        }
+        g_error = 1;
+    }
+    else if (a.size() != b.size()) {
+        if (g_language == 1) {
+            std::cout << "Error!! The minor has to be square. \n";
+        }
+        else {
+            std::cout << "Помилка!! Мінор повинен бути квадратним. \n";
+        }
+        g_error = 1;
+    }
+    else {
+        if (a[0] < 0 || b[0] < 0 || a[a.size() - 1] > this->get_i_size() || b[b.size() - 1] > this->get_j_size()) {
+            if (g_language == 1) {
+                std::cout << "Error!! Wrong index. \n";
+            }
+            else {
+                std::cout << "Помилка!! Не вірний індекс. \n";
+            }
+            g_error = 1;
+        }
+        else {
+            std::vector <std::vector <Fraction>> buff;
+            for (unsigned int i = 0; i < a.size(); i++) {
+                std::vector <Fraction> bbuff;
+                for (unsigned int j = 0; j < b.size(); j++) {
+                    bbuff.push_back(temp.get_matrix()[a[i]][b[j]]);
+                }
+                buff.push_back(bbuff);
+            }
+            temp.set_i_size(a.size() - 1);
+            temp.set_j_size(b.size() - 1);
+            temp.set_matrix(buff);
+        }
     }
 
     return temp;
@@ -484,14 +643,6 @@ int Matrix::rank() {
             rank--;
         }
     }
-    //{
-    if (g_language == 1) {
-        std::cout << "\nThe rank of the matrix is equal to: ";
-    }
-    else {
-        std::cout << "\nРанг матриці дорівнює: ";
-    }
-    //}
 
     return rank;
 }
@@ -499,7 +650,12 @@ int Matrix::rank() {
 bool Matrix::linear_independence() {
     int rank = this->rank();
     //{
-    std::cout << rank << "\n";
+    if (g_language == 1) {
+        std::cout << "\nThe rank of the matrix is equal to: " << rank << ";";
+    }
+    else {
+        std::cout << "\nРанг матриці дорівнює: " << rank << ";";
+    }
     //}
 
     if (rank == this->get_j_size() + 1) {
@@ -508,7 +664,7 @@ bool Matrix::linear_independence() {
             std::cout << "\n Rank = j demension. \nThe system is linearly independent. \n";
         }
         else {
-            std::cout << "\nРанг = розмірності j. \nСистема лінйно незалежна. \n";
+            std::cout << "\nРанг = розмірності j. \nСистема лінійно незалежна. \n";
         }
         //}
 
@@ -533,7 +689,12 @@ Matrix Matrix::basis() {
 
     int rank = this->rank();
     //{
-    std::cout << rank << "\n";
+    if (g_language == 1) {
+        std::cout << "\nThe rank of the matrix is equal to: " << rank << ";";
+    }
+    else {
+        std::cout << "\nРанг матриці дорівнює: " << rank << ";";
+    }
     //}
 
     for (int i = 0; i <= this->get_i_size(); i++) {
@@ -555,4 +716,33 @@ Matrix Matrix::basis() {
     //}
 
     return temp;
+}
+
+std::vector <std::vector <Fraction>> Matrix::Cramer_Method() {
+    Matrix temp(*this);
+    std::vector <std::vector <Fraction>> answer;
+
+    int rank = temp.rank(), rank_main = temp.main_matrix().rank();
+    if (rank != rank_main) {
+        //{
+        if (g_language == 1) {
+            std::cout << "\nSince the rank of the extended and basic matrices do not coincide, the ";
+        }
+        else {
+            std::cout << "\nОскільки ранг розширеної та основної матриці не співпадають, то ";
+        }
+        //}
+        if (g_language == 1) {
+            std::cout << "\nSystem has no solution. \n";
+        }
+        else {
+            std::cout << "\nСистема немає розв'язку. \n";
+        }
+        g_error = 1;
+    }
+    else {
+        // переписати методо minor
+    }
+
+    return answer;
 }

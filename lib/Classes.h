@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <limits>
+#include <algorithm>
 
 class Fraction {
     int numerator;
@@ -61,14 +63,18 @@ public:
     void set_matrix(std::vector <std::vector <Fraction>> mat);
     void set_matrix(int i, std::vector <Fraction> row);
     void set_matrix(int i, int j, Fraction a);
+    Matrix main_matrix();
     Matrix Gaussian_Method();
+    std::vector <Matrix> Gaussian_Method_With_Extract_Answer();
     Matrix minor(int i, int j);
+    Matrix minor(std::vector <int> a, std::vector <int> b);
     Fraction determinant();
     Matrix transpose();
     Matrix inverse();
     int rank();
     bool linear_independence();
     Matrix basis();
+    std::vector <std::vector <Fraction>> Cramer_Method();
 };
 
 namespace Math {

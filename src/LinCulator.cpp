@@ -3,13 +3,14 @@
 // Пофіксити:
 // зробити перевірку на коректність вводу данних користувача в language та task
 // cout матриць в Gaussian_Method()
+// PDE (core dumped) помилка при великих числах - Метод Гауса (long long int у Fraction)
 
-int g_language, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
+int g_language = 1, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // Переписати розроблені методи із чітким поясненням (визначник + Гауса)
+    // В методі Гауса з відповіддю перевірити на винятки
+    // В 8 доробити пошук базису перетину підпросторів
 
-    // Ядро та образ лінійного оператора
     // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
     // базис суми та перетину підпросторів
     // Заміна базису / матриці переходу
@@ -26,11 +27,15 @@ int main() {
 
     system("clear");
     std::cout << "Choose youe language: \nEN - 1 \nUA - 2 \n";
-    std::cin >> g_language;
-    if (g_language != 1 && g_language != 2) {
-        std::cout << "Enter correct answer! \n";
-        std::cin >> g_language;
-    }
+    while (true) {
+            std::cin >> g_language;
+            if (std::cin.fail() || (g_language != 1 && g_language != 2)) {
+                std::cout << "Incorrect value!! Try one more time. \n";
+                std::cin.clear();
+                std::cin.ignore(32767, '\n');
+            }
+            else break;
+        }
     std::system("clear");
 
     while (1) {
@@ -42,6 +47,8 @@ int main() {
                 "4) fing a rank of the matrix \n"
                 "5) check the system for linear independence \n"
                 "6) find the basis of the system \n"
+                "7) solve the SLAE by the Cramer method \n"
+                "8) find the basis of the sum and intersection of subspaces \n"
 
                 "\n0) exit \n";
         }
@@ -53,12 +60,27 @@ int main() {
                 "4) знайти ранг матриці \n"
                 "5) перевірити систему на лінійну незалежність \n"
                 "6) знайти базис системи \n"
+                "7) вирішити СЛАР методом Крамера \n"
+                "8) знайти базис суми та перетину підпросторів \n"
 
                 "\n0) вийти \n";
         }
 
         int task;
-        std::cin >> task;
+        while (true) {
+            std::cin >> task;
+            if (std::cin.fail()) {
+                if (g_language == 1) {
+                    std::cout << "Incorrect value!! Try one more time. \n";
+                }
+                else {
+                    std::cout << "Некоректне значення!! Спробуйте ще раз. \n";
+                }
+                std::cin.clear();
+                std::cin.ignore(32767, '\n');
+            }
+            else break;
+        }
         std::system("clear");
         switch (task) {
             case 0: {
@@ -81,13 +103,7 @@ int main() {
                 else {
                     std::cout << "\nРішення: \n";
                 }
-                matrix.Gaussian_Method();
-
-                /*
-                std::vector <Matrix> answer = matrix.Gaussian_Method();
-                for (unsigned long i = 0; i < answer.size(); i++) {
-                    std::cout << "\n" << answer[i];
-                }*/
+                matrix.Gaussian_Method_With_Extract_Answer();
             }; break;
 
             case 2: {
@@ -143,7 +159,15 @@ int main() {
                 else {
                     std::cout << "\nРішення: \n";
                 }
-                std::cout << matrix.rank() << "\n";
+                int rank = matrix.rank();
+                //{
+                if (g_language == 1) {
+                    std::cout << "\nThe rank of the matrix is equal to: " << rank;
+                }
+                else {
+                    std::cout << "\nРанг матриці дорівнює: " << rank;
+                }
+                //}
             }; break;
 
             case 5: {
@@ -169,6 +193,97 @@ int main() {
                 std::cin >> matrix;
                 std::cout << matrix.basis();
             }; break;
+
+            case 7: {
+                if (g_language == 1 ) {
+                    std::cout << "Enter the coefficients of extended SLAE in the form of a matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть коефіцієенти розширеної СЛАР у вигляді матриці: \n";
+                }
+                Matrix matrix;
+                std::cin >> matrix;
+                matrix.Cramer_Method();
+            }; break;
+
+            case 8: {
+                if (g_language == 1) {
+                    std::cout << "Enter the basis of the first and second subspaces as a matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть базис першого та другого підпросторів як матрицю: \n";
+                }
+                Matrix subspace1, subspace2;
+                std::cin >> subspace1 >> subspace2;
+                if (g_language == 1) {
+                    std::cout << "\nFind the basis and dimension of the first subspace: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис та розмірність першого підпростору: \n";
+                }
+                std::cout << (subspace1 = subspace1.basis());
+                if (g_language == 1) {
+                    std::cout << "\nThe dimension of the matrix is equal: " << subspace1.get_j_size() + 1 << "\n";
+                }
+                else {
+                    std::cout << "\nРозмірність цієї матриці дорівнює: " << subspace1.get_j_size() + 1 << "\n";
+                }
+                if (g_language == 1) {
+                    std::cout << "\nFind the basis and dimension of the second subspace: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис та розмірність другого підпростору: \n";
+                }
+                std::cout << (subspace2 = subspace2.basis());
+                if (g_language == 1) {
+                    std::cout << "\nThe dimension of the matrix is equal: " << subspace2.get_j_size() + 1 << "\n";
+                }
+                else {
+                    std::cout << "\nРозмірність цієї матриці дорівнює: " << subspace2.get_j_size() + 1 << "\n";
+                }
+                if (g_language == 1) {
+                    std::cout << "\nFind the basis and dimension of the sum of subspaces: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис та розмірність суми підпросторів: \n";
+                }
+                Matrix sum(subspace1);
+                std::vector <std::vector <Fraction>> temp = subspace1.get_matrix();
+                for (int i = 0; i <= subspace2.get_i_size(); i++) {
+                    for (int j = 0; j <= subspace2.get_j_size(); j++) {
+                        temp[i].push_back(subspace2.get_matrix()[i][j]);
+                    }
+                }
+                sum.set_j_size(subspace1.get_j_size() + subspace2.get_j_size() + 1);
+                sum.set_matrix(temp);
+                std::cout << (sum = sum.basis());
+                if (g_language == 1) {
+                    std::cout << "\nThe dimension of the matrix is equal: " << sum.get_j_size() + 1 << "\n";
+                }
+                else {
+                    std::cout << "\nРозмірність цієї матриці дорівнює: " << sum.get_j_size() + 1 << "\n";
+                }
+                if (g_language == 1) {
+                    std::cout << "\nFind the basis and dimension of the intersection of subspaces: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис та розмірність перетину підпросторів: \n";
+                }
+                std::cout << "\ndim(L1 ⋂ L2) = dimL1 + dimL2 - dim(L1 + L2) = " << subspace1.get_j_size() + subspace2.get_j_size() - sum.get_j_size() + 1 << ";\n";
+                std::cout << "x ∈ L1 && x ∈ L2 => \n";
+                Matrix intersection(subspace1);
+                temp = subspace1.get_matrix();
+                for (int i = 0; i <= subspace2.get_i_size(); i++) {
+                    Fraction fr(-1, 1);
+                    for (int j = 0; j <= subspace2.get_j_size(); j++) {
+                        temp[i].push_back(subspace2.get_matrix()[i][j] * fr);
+                    }
+                    temp[i].push_back(0);
+                }
+                intersection.set_j_size(subspace1.get_j_size() + subspace2.get_j_size() + 2);
+                intersection.set_matrix(temp);
+                std::cout << "Базис шукай сам! \n";
+            }
         }
 
         if (g_error) {
@@ -176,7 +291,7 @@ int main() {
                 std::cout << "\nSeems like somewhere occured a mistake. Please, check your input data! \n";
             }
             else {
-                std::cout << "\nВиглядає ніби десь трапилась помилка, перегляньте корекність вводу данних! \n";
+                std::cout << "\nВиглядає ніби десь трапилась помилка, перегляньте коректність вводу данних! \n";
             }
             g_error = 0;
         }
