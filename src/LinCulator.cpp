@@ -1,41 +1,42 @@
 #include "../lib/Classes.h"
 
 // Пофіксити:
-// зробити перевірку на коректність вводу данних користувача в language та task
-// cout матриць в Gaussian_Method()
+// cout матриць в Gaussian_Method() (напвено пов'язано із знаменником, коли чиссельник 0)
 // PDE (core dumped) помилка при великих числах - Метод Гауса (long long int у Fraction)
+// Всі g_error поміняти на assert аьо на exit("");
 
 int g_language = 1, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // В методі Гауса з відповіддю перевірити на винятки
-    // В 8 доробити пошук базису перетину підпросторів
+    // Ядро і образ лінійного оператора ??????
+    // Перевірка на пряму суму просторів ??????
 
-    // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
-    // базис суми та перетину підпросторів
     // Заміна базису / матриці переходу
     // Координати вектора в іншому базисі
     // Матриця лінійного оператора в іншому базисі
-    // Знайти власні числа та власні вектори
-    // Нормальна форма Жодана + пошук функції
     // Процес ортогоналіції Грамма-Шміта + ортонормація
-    // Перевірка на пряму суму просторів
+
     // Ортогональне доповнення
     // Знаходження ортогональної проекції та ортогональної складової
     // Знайти матрицю спряженого оператора
     // Побудувати ортонормаваний базис із влачних векторів
 
+    // Знайти власні числа та власні вектори
+    // Нормальна форма Жодана + пошук функції
+    // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
+
+
     system("clear");
     std::cout << "Choose youe language: \nEN - 1 \nUA - 2 \n";
     while (true) {
-            std::cin >> g_language;
-            if (std::cin.fail() || (g_language != 1 && g_language != 2)) {
-                std::cout << "Incorrect value!! Try one more time. \n";
-                std::cin.clear();
-                std::cin.ignore(32767, '\n');
-            }
-            else break;
+        std::cin >> g_language;
+        if (std::cin.fail() || (g_language != 1 && g_language != 2)) {
+            std::cout << "Incorrect value!! Try one more time. \n";
+            std::cin.clear();
+            std::cin.ignore(32767, '\n');
         }
+        else break;
+    }
     std::system("clear");
 
     while (1) {
@@ -47,8 +48,9 @@ int main() {
                 "4) fing a rank of the matrix \n"
                 "5) check the system for linear independence \n"
                 "6) find the basis of the system \n"
-                "7) solve the SLAE by the Cramer method \n"
+                "7) solve the SLAE by the Cramer method (do not work) \n"
                 "8) find the basis of the sum and intersection of subspaces \n"
+                "9) base replacement \n"
 
                 "\n0) exit \n";
         }
@@ -60,8 +62,9 @@ int main() {
                 "4) знайти ранг матриці \n"
                 "5) перевірити систему на лінійну незалежність \n"
                 "6) знайти базис системи \n"
-                "7) вирішити СЛАР методом Крамера \n"
+                "7) вирішити СЛАР методом Крамера (не працює) \n"
                 "8) знайти базис суми та перетину підпросторів \n"
+                "9) заміна базису \n"
 
                 "\n0) вийти \n";
         }
@@ -282,8 +285,18 @@ int main() {
                 }
                 intersection.set_j_size(subspace1.get_j_size() + subspace2.get_j_size() + 2);
                 intersection.set_matrix(temp);
-                std::cout << "Базис шукай сам! \n";
+                intersection.Gaussian_Method();
+                if (g_language == 1) {
+                    std:: cout << "\nWrite a matrix as a system, express some basis vectors through others, write the vector on the basis and determine the basis vectors of intersection of subspaces. \n";
+                }
+                else {
+                    std::cout << "\nЗапишіть матрицю у вигляді системи, виразіть одні базисні вектори через інші, розпишіть вектор за базисом та визначіть базисні вектори перетину підпросторів. \n";
+                }
             }
+
+            case 9: {
+
+            } break;
         }
 
         if (g_error) {

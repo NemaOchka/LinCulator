@@ -162,20 +162,23 @@ std::ostream& operator<< (std::ostream& out, const Matrix& a) {
 }
 
 std::istream& operator>> (std::istream& in, Matrix& temp) {
-start:
-    in >> temp.i_size >> temp.j_size;
+
+    while (true) {
+        in >> temp.i_size >> temp.j_size;
+        if (std::cin.fail() || (temp.i_size < 0 && temp.j_size < 0)) {
+            if (g_language == 1) {
+                std::cout << "The dimension of the matrix cannot be negative! Try again. \n";
+            }
+            else {
+                std::cout << "Розмірність матриці не може приймати негативне занчення! Спробуйте ще раз. \n";
+            }
+            std::cin.clear();
+            std::cin.ignore(32767, '\n');
+        }
+        else break;
+    }
     temp.i_size--;
     temp.j_size--;
-
-    while(temp.i_size < 0 && temp.j_size < 0) {
-        if (g_language == 1) {
-            std::cout << "The dimension of the matrix cannot be negative! Try again. \n";
-        }
-        else {
-            std::cout << "Розмірність матриці не може приймати негативне занчення! Спробуйте ще раз. \n";
-        }
-        goto start;
-    }
 
     std::vector <Fraction> b;
     temp.matrix.clear();
@@ -264,65 +267,161 @@ Matrix Matrix::main_matrix() {
 }
 
 Matrix Matrix::Gaussian_Method() {
-    Matrix temp(*this);
+        Matrix temp(*this);
+        //{
+        Matrix check(*this);
+        std::cout << "\n" << temp;
+        //}
+        for (int i = 0, k = 0; (i <= temp.i_size) && (k <= temp.j_size ); i++, k++) {
+            int row_delition = 0;
+            if (temp.matrix[i][k].get_numerator() == 0) {
+                int all_in_column_zero = 1;
+                for (int g = i + 1; g <= temp.i_size && all_in_column_zero; g++) {
+                    if (temp.matrix[g][k].get_numerator() != 0) {
+                        temp.swap_rows(i, g);
+                        all_in_column_zero = 0;
+                    }
+                }
+                if (all_in_column_zero) {
+                    int all_in_row_zero = 1;
+                    for (int g = k + 1; g <= temp.j_size && all_in_row_zero; g++) {
+                        if (temp.matrix[i][g].get_numerator() != 0){
+                            //{
+                            if (g_language == 1) {
+                                std::cout << "Swap " << i + 1 << " and " << g + 1 << " columns: \n";
+                            }
+                            else {
+                                std::cout << "Поміняємо місцями " << i + 1 << " та " << g + 1 << " стовпці: \n";
+                            }
+                            //}
+                            temp.swap_columns(i, g);
+                            all_in_row_zero = 0;
+                        }
+                    }
+                    if (all_in_row_zero) {
+                        std::vector <std::vector <Fraction>> buff = temp.get_matrix();
+                        buff.erase(buff.begin() + i + 1);
+                        temp.set_i_size(temp.get_i_size() - 1);
+                        temp.set_matrix(buff);
+                        i--;
+                        row_delition = 1;
+                    }
+                }
+            }
+            if (!row_delition) {
+                //{
+                if (temp != check) {
+                    std::cout << "\n" << temp;
+                    check = temp;
+                }
+                //}
+                Fraction row_divider = temp.matrix[i][k];
+                for (int j = k; j <= temp.j_size; j++) {
+                    temp.matrix[i][j] = temp.matrix[i][j] / row_divider;
+                }
+                //{
+                if (temp != check) {
+                    std::cout << "\n" << temp;
+                    check = temp;
+                }
+                //}
+                for (int h = i + 1; h <= temp.i_size; h++) {
+                    Fraction row_multiplier = temp.matrix[h][k];
+                    for (int j = k; j <= temp.j_size; j++) {
+                        temp.matrix[h][j] = temp.matrix[h][j] - row_multiplier * temp.matrix[i][j];
+                    }
+                }
+                //{
+                if (temp != check) {
+                    std::cout << "\n" << temp;
+                    check = temp;
+                }
+                //}
+                row_delition = 0;
+            }
+        }
 
+        return temp;
+}
+
+std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
+    std::vector <Matrix> answer;
+    Matrix temp(*this);
+    std::vector <std::vector <int>> swappiness;
     //{
     Matrix check(*this);
     std::cout << "\n" << temp;
     //}
     for (int i = 0, k = 0; (i <= temp.i_size) && (k <= temp.j_size ); i++, k++) {
-        start:
+        int row_delition = 0;
         if (temp.matrix[i][k].get_numerator() == 0) {
-            int all_column_zero = 1;
-            for (int g = i + 1; g <= temp.i_size && all_column_zero; g++) {
+            int all_in_column_zero = 1;
+            for (int g = i + 1; g <= temp.i_size && all_in_column_zero; g++) {
                 if (temp.matrix[g][k].get_numerator() != 0) {
-                    std::vector <Fraction> buff = temp.matrix[g];
-                    temp.matrix[g] = temp.matrix[i];
-                    temp.matrix[i] = buff;
-                    all_column_zero = 0;
-                 }
-             }
-             if (all_column_zero) {
-                k++;
-                goto start;
-             }
-        }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
-        }
-        //}
-        Fraction row_divider = temp.matrix[i][k];
-        for (int j = k; j <= temp.j_size; j++) {
-             temp.matrix[i][j] = temp.matrix[i][j] / row_divider;
-        }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
-        }
-        //}
-        for (int h = i + 1; h <= temp.i_size; h++) {
-            Fraction row_multiplier = temp.matrix[h][k];
-            for (int j = k; j <= temp.j_size; j++) {
-                temp.matrix[h][j] = temp.matrix[h][j] - row_multiplier * temp.matrix[i][j];
+                    temp.swap_rows(i, g);
+                    all_in_column_zero = 0;
+                }
+            }
+            if (all_in_column_zero) {
+                int all_in_row_zero = 1;
+                for (int g = k + 1; g < temp.j_size && all_in_row_zero; g++) {
+                    if (temp.matrix[i][g].get_numerator() != 0){
+                        //{
+                        if (g_language == 1) {
+                            std::cout << "Swap " << i + 1 << " and " << g + 1 << " columns: \n";
+                        }
+                        else {
+                            std::cout << "Поміняємо місцями " << i + 1 << " та " << g + 1 << " стовпці: \n";
+                        }
+                        //}
+                        temp.swap_columns(i, g);
+                        swappiness.insert(swappiness.begin(), {i , g});
+                        all_in_row_zero = 0;
+                    }
+                }
+                if (all_in_row_zero) {
+                    std::vector <std::vector <Fraction>> buff = temp.get_matrix();
+                    buff.erase(buff.begin() + i + 1);
+                    temp.set_i_size(temp.get_i_size() - 1);
+                    temp.set_matrix(buff);
+                    i--;
+                    row_delition = 1;
+                }
             }
         }
-        //{
-        if (temp != check) {
-            std::cout << "\n" << temp;
-            check = temp;
+        if (!row_delition) {
+            //{
+            if (temp != check) {
+                std::cout << "\n" << temp;
+                check = temp;
+            }
+            //}
+            Fraction row_divider = temp.matrix[i][k];
+            for (int j = k; j <= temp.j_size; j++) {
+                temp.matrix[i][j] = temp.matrix[i][j] / row_divider;
+            }
+            //{
+            if (temp != check) {
+                std::cout << "\n" << temp;
+                check = temp;
+            }
+            //}
+            for (int h = i + 1; h <= temp.i_size; h++) {
+                Fraction row_multiplier = temp.matrix[h][k];
+                for (int j = k; j <= temp.j_size; j++) {
+                    temp.matrix[h][j] = temp.matrix[h][j] - row_multiplier * temp.matrix[i][j];
+                }
+            }
+            //{
+            if (temp != check) {
+                std::cout << "\n" << temp;
+                check = temp;
+            }
+            //}
+            row_delition = 0;
         }
-        //}
     }
 
-    return temp;
-}
-
-std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
-    std::vector <Matrix> answer;
-    Matrix temp = this->Gaussian_Method(), temp_main = this->main_matrix();
     int rank = temp.rank();
     //{
     if (g_language == 1) {
@@ -332,6 +431,7 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
         std::cout << "\nРанг матриці дорівнює: " << rank << "; \nЗнайдемо ранг основної матриці: \n";
     }
     //}
+    Matrix temp_main = this->main_matrix();
     int rank_main = temp_main.rank();
     //{
     if (g_language == 1) {
@@ -357,8 +457,6 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
             std::cout << "\nСистема немає розв'язку. \n";
         }
         g_error = 1;
-
-        return answer;
     }
     else {
         //{
@@ -387,11 +485,12 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
             }
             Matrix mat (0, temp.get_j_size() - 1, {vector});
             answer.insert(answer.begin(), mat.transpose());
+            for (unsigned int i = 0; i < swappiness.size(); i++) {
+                answer[0].swap_rows(swappiness[i][0], swappiness[i][1]);
+            }
             //{
             std::cout << "=\n" << answer[0];
             //}
-
-            return answer;
         } else {
             for (int i = temp.get_j_size() - rank, r = 0; i >= 0; i--, r++) {
                 std::vector <Fraction> vector;
@@ -418,6 +517,11 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
                 Matrix mat(0, temp.get_j_size() - 1, {vector});
                 answer.insert(answer.begin(), mat.transpose());
             }
+            for (unsigned int i = 0; i < answer.size(); i++) {
+                for (unsigned int j = 0; j < swappiness.size(); j++) {
+                    answer[i].swap_rows(swappiness[j][0], swappiness[j][1]);
+                }
+            }
             //{
             std::cout << "= ";
             for (unsigned int i = 0; i < answer.size(); i++) {
@@ -428,20 +532,48 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
                 std::cout << "\n" << answer[i];
             }
             //}
-
-            return answer;
-
-            // Написати вивід результату для 2 випадків
-            // Передбачити коли змінна по діалоналі рівняється 0, тобто треба міняти місцями змінні (в обох випадках). Приклад:
-            // 6 4 2 4 1 2
-            // 0 3 0 1 4 1
-            // 0 2 0 1 5 0
-            //
-            // 9 8 7 6 5 4
-            // 1 2 3 4 5 6
-            // 3 4 5 6 7 8
-
         }
+    }
+
+    return answer;
+}
+void Matrix::swap_rows(int a, int b) {
+
+    if (a > b) std::swap(a, b);
+    if (a >= 0 && b >= 0 && (a + b) < 2 * this->get_i_size() && (a != b)) {
+        std::vector <Fraction> buff = this->get_matrix()[a];
+        this->set_matrix(a, this->get_matrix()[b]);
+        this->set_matrix(b, buff);
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "Error!! Wrong indexes. \n";
+        }
+        else {
+            std::cout << "Помилка!! Не вірні індекси. \n";
+        }
+        g_error = 1;
+    }
+}
+
+void Matrix::swap_columns(int a, int b) {
+
+    if (a > b) std::swap(a, b);
+    if (a >= 0 && b >= 0 && (a + b) < 2 * this->get_j_size() && (a != b)) {
+        for (int i = 0; i <= this->get_i_size(); i++) {
+            Fraction buff = this->get_matrix()[i][a];
+            this->set_matrix(i, a, this->get_matrix()[i][b]);
+            this->set_matrix(i, b, buff);
+        }
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "Error!! Wrong indexes. \n";
+        }
+        else {
+            std::cout << "Помилка!! Не вірні індекси. \n";
+        }
+        g_error = 1;
     }
 }
 
@@ -633,7 +765,9 @@ int Matrix::rank() {
 
     temp = temp.Gaussian_Method();
 
-    int rank = i_size + 1;
+    int rank = temp.i_size + 1;
+
+
     for (int i = i_size; i >= 0; i--) {
         Fraction sum;
         for (int j = 0; j <= j_size; j++) {
@@ -741,8 +875,31 @@ std::vector <std::vector <Fraction>> Matrix::Cramer_Method() {
         g_error = 1;
     }
     else {
-        // переписати методо minor
+
     }
 
     return answer;
 }
+
+/*Matrix Matrix::get_matrix_for_Cramer_method() {
+    Matrix temp(*this);
+
+    int rank = temp.rank();
+    std::vector <int> rows, columns;
+    for (int i = 0; i < rank; i++) {
+        rows.push_back(i);
+        columns.push_back(i);
+    }
+    for (int i = 0; *****; i++, columns[columns.size() - 1] = rank + i - 1) {
+        for (int j = 0; j <= i; j++) {
+            columns[columns.size() - j - 1]++;
+        }
+        for (; columns[columns.size() - 1] <= temp.get_j_size(); columns[columns.size() - 1]++) {
+            /// метод має повартити вектори з номерами рядків і стовпців базисного мінора, сам по собі він не потрібен, тому потім просто вставити в метод Крамара
+            /// допустим у нас ранг 3 а довжина 5, рухаємо останній індекс до кінця, потім переде останній на крок вперед і останній на крок вперед, тепер сунето знову остнанній до кінця,
+            /// тким способом переберем всі стовпці, а потім также і рядки
+            if(temp.minor(rows, columns).determinant().get_numerator()) break;
+        }
+    }
+    return temp;
+}*/

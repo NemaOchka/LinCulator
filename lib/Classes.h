@@ -66,6 +66,8 @@ public:
     Matrix main_matrix();
     Matrix Gaussian_Method();
     std::vector <Matrix> Gaussian_Method_With_Extract_Answer();
+    void swap_rows(int a, int b);
+    void swap_columns(int a, int b);
     Matrix minor(int i, int j);
     Matrix minor(std::vector <int> a, std::vector <int> b);
     Fraction determinant();
