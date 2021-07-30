@@ -50,7 +50,8 @@ int main() {
                 "6) find the basis of the system \n"
                 "7) solve the SLAE by the Cramer method (do not work) \n"
                 "8) find the basis of the sum and intersection of subspaces \n"
-                "9) base replacement \n"
+                "9) matrix of transition from basis to basis \n"
+                "10) the coordinates of the vector in another basis \n"
 
                 "\n0) exit \n";
         }
@@ -64,7 +65,8 @@ int main() {
                 "6) знайти базис системи \n"
                 "7) вирішити СЛАР методом Крамера (не працює) \n"
                 "8) знайти базис суми та перетину підпросторів \n"
-                "9) заміна базису \n"
+                "9) матриця переходу від базису до базису \n"
+                "10) кoординати вектора в іншому базисі \n"
 
                 "\n0) вийти \n";
         }
@@ -295,7 +297,48 @@ int main() {
             }
 
             case 9: {
+                if (g_language == 1) {
+                    std::cout << "Enter the bases as the matrices from which you want to make the transition: \n";
+                }
+                else {
+                    std::cout << "Введіть базиси, як матриці, з яких потрібно зробити перехід: \n";
+                }
+                Matrix basis1, basis2;
+                std::cin >> basis1 >> basis2;
+                if (g_language == 1) {
+                    std::cout << "\nThe solution: \n";
+                }
+                else {
+                    std::cout << "\nРішення: \n";
+                }
+                std::cout << basis1.transiotion_matrix(basis2);
+            } break;
 
+            case 10: {
+                if (g_language == 1) {
+                    std::cout << "Enter coordinats of the vector, as matrix, its basis and transitional basis: \n";
+                }
+                else {
+                    std::cout << "Введіть координати вектра, як матрицю, його базис та базис, до якого звести: \n";
+                }
+                Matrix vector, basis1, basis2;
+                std::cin >> vector >> basis1 >> basis2;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the transiotion matrix: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо матрицю переходу: \n";
+                }
+                basis2 = basis2.transiotion_matrix(basis1);
+                std::cout << basis2;
+                if (g_language == 1) {
+                    std::cout << "\nTo find the coordinates of the vector in the new basis, multiply the transition matrix by the 'old' coordinates: \n";
+                }
+                else {
+                    std::cout << "\nЩоб знайти координати вектора у новому базисі, перемножимо матрицю переходу на 'старі' координати: \n";
+                }
+                vector = basis2 * vector;
+                std::cout << vector << std::endl;
             } break;
         }
 

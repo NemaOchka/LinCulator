@@ -77,6 +77,7 @@ public:
     bool linear_independence();
     Matrix basis();
     std::vector <std::vector <Fraction>> Cramer_Method();
+    Matrix transiotion_matrix(Matrix mat);
 };
 
 namespace Math {

@@ -903,3 +903,56 @@ std::vector <std::vector <Fraction>> Matrix::Cramer_Method() {
     }
     return temp;
 }*/
+
+Matrix Matrix::transiotion_matrix(Matrix mat) {
+    Matrix temp(*this);
+
+    if (i_size == mat.i_size && j_size == mat.j_size) {
+        std::vector <std::vector <Matrix>> answer;
+        for (int j = 0; j <= mat.j_size; j++) {
+            temp = *this;
+            std::vector <std::vector <Fraction>> ttemp = temp.get_matrix();
+            for (int i = 0; i <= mat.i_size; i++) {
+                ttemp[i].push_back(mat.matrix[i][j]);
+            }
+            temp.set_j_size(temp.j_size + 1);
+            temp.set_matrix(ttemp);
+            //{
+            if (g_language == 1) {
+                std::cout << "\nLet's find " << j + 1 << " column of transiotion matrix: \n";
+            }
+            else {
+                std::cout << "\nЗнайдемо " << j + 1 << " сповчик матриці переходу: \n";
+            }
+            //}
+            answer.push_back(temp.Gaussian_Method_With_Extract_Answer());
+        }
+        std::vector <std::vector <Fraction>> buff(mat.i_size + 1);
+        for (unsigned int j = 0; j < answer.size(); j++) {
+            for (int i = 0; i <= answer[0][0].get_i_size(); i++) {
+                buff[i].push_back(answer[j][0].get_matrix()[i][0]);
+            }
+        }
+        temp.set_j_size(mat.j_size);
+        temp.set_matrix(buff);
+        //{
+        if (g_language == 1) {
+            std::cout << "\nThe transition matrix is: \n";
+        }
+        else {
+            std::cout << "\nМатриця переходу має вигляд: \n";
+        }
+        //}
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "\nError!! Wrong dimensions. \n";
+        }
+        else {
+            std::cout << "\nПомилка!! Не вірні розмірності. \n";
+        }
+        g_error = 1;
+    }
+
+    return temp;
+}
