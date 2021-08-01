@@ -11,9 +11,6 @@ int main() {
     // Ядро і образ лінійного оператора ??????
     // Перевірка на пряму суму просторів ??????
 
-    // Заміна базису / матриці переходу
-    // Координати вектора в іншому базисі
-    // Матриця лінійного оператора в іншому базисі
     // Процес ортогоналіції Грамма-Шміта + ортонормація
 
     // Ортогональне доповнення
@@ -52,6 +49,8 @@ int main() {
                 "8) find the basis of the sum and intersection of subspaces \n"
                 "9) matrix of transition from basis to basis \n"
                 "10) the coordinates of the vector in another basis \n"
+                "11) find the matrix of the linear operator in another basis \n"
+                "12) find the matrix of the linear operator in another basis(in pair of basis) \n"
 
                 "\n0) exit \n";
         }
@@ -67,6 +66,8 @@ int main() {
                 "8) знайти базис суми та перетину підпросторів \n"
                 "9) матриця переходу від базису до базису \n"
                 "10) кoординати вектора в іншому базисі \n"
+                "11) знайти матрицю лінійного оператора в іншому базисі \n"
+                "12) знайти матрицю лінійного оператора в іншому базисі(в парі базисів) \n"
 
                 "\n0) вийти \n";
         }
@@ -339,6 +340,82 @@ int main() {
                 }
                 vector = basis2 * vector;
                 std::cout << vector << std::endl;
+            } break;
+
+            case 11: {
+                if (g_language == 1) {
+                    std::cout << "Enter the matrix of liner operator, its basis and transitional basis: \n";
+                }
+                else {
+                    std::cout << "Введіть матрицю, її базис та базис, до якого звести: \n";
+                }
+                Matrix mat_of_lin_oper, basis1, basis2;
+                std::cin >> mat_of_lin_oper >> basis1 >> basis2;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s fint the transition matrix: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо матрицю переходу: \n";
+                }
+                basis1 = basis1.transiotion_matrix(basis2);
+                std::cout << basis1 << std::endl;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find inverse matrix of the transition matrix: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо обернену матрицю матриці переходу: \n";
+                }
+                mat_of_lin_oper = basis1.inverse() * mat_of_lin_oper * basis1;
+                if (g_language == 1) {
+                    std::cout << "\nLet A be the matrix of a linear operator in the 'old' basis, A' be the matrix of the linear operator in the 'new' basis, and U be the matrix of the transition from the old basis to the new one, then: \n";
+                }
+                else {
+                    std::cout << "\nНехай A - матриця лінійного оператора в 'старому' базисі, А' - матриця лінійного оператора  в 'новому' базисі, а U - матриця переходу від старого базису до нового, то: \n";
+                }
+                std::cout << "\nA' = U^{-1} * A * U; \nA` = \n";
+                std::cout << mat_of_lin_oper;
+            } break;
+
+            case 12: {
+                if (g_language == 1) {
+                    std::cout << "Enter the matrix of liner operator, its basis(in pair) and transitional basis(in pair): \n";
+                }
+                else {
+                    std::cout << "Введіть матрицю, її базис(в парі) та базис(в парі), до якого звести: \n";
+                }
+                Matrix mat_of_lin_oper, basis1_1, basis1_2, basis2_1, basis2_2;
+                std::cin >> mat_of_lin_oper >> basis1_1 >> basis1_2 >> basis2_1 >> basis2_2;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the transposition matrix for first pair of basises: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо матрицю переходу для першої пари базисів: \n";
+                }
+                Matrix trans_mat1 = basis1_1.transiotion_matrix(basis2_1);
+                std::cout << trans_mat1;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the transposition matrix for second pair of basises: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо матрицю переходу для другої пари базисів: \n";
+                }
+                Matrix trans_mat2 = basis1_2.transiotion_matrix(basis2_2);
+                std::cout << trans_mat2;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find inverse matrix of second transition matrix: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо обернену матрицю другої матриці переходу: \n";
+                }
+                mat_of_lin_oper = trans_mat2.inverse() * mat_of_lin_oper * trans_mat1;
+                if (g_language == 1) {
+                    std::cout << "\nLet A be the matrix of a linear operator in the 'old' pair of basises, A' be the matrix of the linear operator in the 'new' pair of basises, U be the matrix of the transition from the first old pair of basises to the new one, and V be the matrix of the transition from the second old pair of basises to the new one, then: \n";
+                }
+                else {
+                    std::cout << "\nНехай A - матриця лінійного оператора в 'старшій' парі базисів, А' - матриця лінійного оператора  в 'новомій' парі базисів, U - матриця переходу від першої старої пари базисів до нової, V - матриця переходу від другої старої пари базисів до новохї, то: \n";
+                }
+                std::cout << "\nA' = V^{-1} * A * U; \nA` = \n";
+                std::cout << mat_of_lin_oper;
             } break;
         }
 

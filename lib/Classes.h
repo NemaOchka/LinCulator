@@ -35,6 +35,7 @@ public:
     void set_denominator(int a);
     Fraction GCD();       //Great Common Divisor
     int lenth();
+    Fraction inverse();
 };
 
 class Matrix {

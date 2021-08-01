@@ -177,3 +177,21 @@ int Fraction::lenth() {
 
     return len;
 }
+
+Fraction Fraction::inverse() {
+    if (numerator != 0) {
+        int buff = numerator;
+        numerator = denominator;
+        denominator = buff;
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "\nError!! Zero denominator. \n";
+        }
+        else {
+            std::cout << "\nПомилка!! Нульовий знаменник. \n";
+        }
+        g_error = 1;
+    }
+    return *this;
+}

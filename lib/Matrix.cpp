@@ -722,6 +722,12 @@ Matrix Matrix::inverse() {
         }
         g_error = 1;
     }
+    else if (i_size == 0 && j_size == 0) {
+        temp.matrix[0][0] = temp.matrix[0][0].inverse();
+        //{
+        std::cout << temp;
+        //}
+    }
     else {
         //{
         std::cout << "\nA' = 1/det(A) * (-1)^(i + j) * \n";
@@ -742,7 +748,7 @@ Matrix Matrix::inverse() {
                 temp.matrix[i][j] = fr / determ * fr2 * trans.minor(i, j).determinant();
                 //{
                 std::cout << "A[" << j << "][" << i << "] = \n" << trans.minor(i, j);
-                std::cout << "det(A[" << j << "][" << i << "])  =" << trans.minor(i, j).determinant() << "\n\n";
+                std::cout << "det(A[" << j << "][" << i << "]) = " << trans.minor(i, j).determinant() << "\n\n";
                 //}
             }
         }
