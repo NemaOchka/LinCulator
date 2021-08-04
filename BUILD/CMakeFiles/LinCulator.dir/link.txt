@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/LinCulator.dir/src/LinCulator.cpp.o -o LinCulator  -Wl,-rpath,/home/nachalnik/Education/Prog/C++/LinCulator/BUILD libClasses.so 
