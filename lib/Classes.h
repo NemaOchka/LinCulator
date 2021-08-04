@@ -36,6 +36,7 @@ public:
     Fraction GCD();       //Great Common Divisor
     int lenth();
     Fraction inverse();
+    Fraction square_root();
 };
 
 class Matrix {
@@ -79,6 +80,9 @@ public:
     Matrix basis();
     std::vector <std::vector <Fraction>> Cramer_Method();
     Matrix transiotion_matrix(Matrix mat);
+    std::vector <Matrix> extract_vectors();
+    Fraction scalar_product(const Matrix& mat);
+    Matrix GrammSchmidt_orthogonalization();
 };
 
 namespace Math {
@@ -86,6 +90,7 @@ namespace Math {
     //{
     Fraction Determinant_with_explanation(Matrix temp);
     //}
+    Matrix get_matrix_from_array_of_vectors(std::vector <Matrix>& a);
 }
 
 #endif

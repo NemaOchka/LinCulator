@@ -8,15 +8,13 @@
 int g_language = 1, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // Ядро і образ лінійного оператора ??????
+    // Ядро і образ лінійного оператора
     // Перевірка на пряму суму просторів ??????
-
-    // Процес ортогоналіції Грамма-Шміта + ортонормація
+    // Добавити роботу з корнями + нормація базису
 
     // Ортогональне доповнення
-    // Знаходження ортогональної проекції та ортогональної складової
     // Знайти матрицю спряженого оператора
-    // Побудувати ортонормаваний базис із влачних векторів
+    // Побудувати ортонормаваний базис із влачних векторів (знаходимо жорданову форму + процес Грамма-Шмітта)
 
     // Знайти власні числа та власні вектори
     // Нормальна форма Жодана + пошук функції
@@ -40,34 +38,44 @@ int main() {
         if (g_language == 1) {
             std::cout << "Choose your task: \n"
                 "1) solve a SLAE by the Gaussian method \n"
-                "2) find a determinant of the matrix \n"
-                "3) find an inverse matrix \n"
-                "4) fing a rank of the matrix \n"
-                "5) check the system for linear independence \n"
-                "6) find the basis of the system \n"
-                "7) solve the SLAE by the Cramer method (do not work) \n"
-                "8) find the basis of the sum and intersection of subspaces \n"
-                "9) matrix of transition from basis to basis \n"
-                "10) the coordinates of the vector in another basis \n"
-                "11) find the matrix of the linear operator in another basis \n"
-                "12) find the matrix of the linear operator in another basis(in pair of basis) \n"
+                "2) scalar product of vectors \n"
+                "3) find a determinant of the matrix \n"
+                "4) find an inverse matrix \n"
+                "5) fing a rank of the matrix \n"
+                "6) check the system for linear independence \n"
+                "7) find the basis of the system \n"
+                "8) solve the SLAE by the Cramer method (do not work) \n"
+                "9) find the basis of the sum and intersection of subspaces \n"
+                "10) matrix of transition from basis to basis \n"
+                "11) the coordinates of the vector in another basis \n"
+                "12) find the matrix of the linear operator in another basis \n"
+                "13) find the matrix of the linear operator in another basis(in pair of basis) \n"
+                "14) Gram-Schmidt orthogonalization process \n"
+                "15) find the orthogonal projection and orthogonal complement of the vector \n"
+                "16) find an orthogonal complement to the linear shell \n"
+                "17) find the matrix of the conjugate linear operator \n"
 
                 "\n0) exit \n";
         }
         else {
             std::cout << "Вибири свою задачу: \n"
                 "1) вирішити СЛАР методом Гауса \n"
-                "2) знайти визначник матриці \n"
-                "3) знайти обернену матрицю \n"
-                "4) знайти ранг матриці \n"
-                "5) перевірити систему на лінійну незалежність \n"
-                "6) знайти базис системи \n"
-                "7) вирішити СЛАР методом Крамера (не працює) \n"
-                "8) знайти базис суми та перетину підпросторів \n"
-                "9) матриця переходу від базису до базису \n"
-                "10) кoординати вектора в іншому базисі \n"
-                "11) знайти матрицю лінійного оператора в іншому базисі \n"
-                "12) знайти матрицю лінійного оператора в іншому базисі(в парі базисів) \n"
+                "2) скалярний добуток векторів \n"
+                "3) знайти визначник матриці \n"
+                "4) знайти обернену матрицю \n"
+                "5) знайти ранг матриці \n"
+                "6) перевірити систему на лінійну незалежність \n"
+                "7) знайти базис системи \n"
+                "8) вирішити СЛАР методом Крамера (не працює) \n"
+                "9) знайти базис суми та перетину підпросторів \n"
+                "10) матриця переходу від базису до базису \n"
+                "11) кoординати вектора в іншому базисі \n"
+                "12) знайти матрицю лінійного оператора в іншому базисі \n"
+                "13) знайти матрицю лінійного оператора в іншому базисі(в парі базисів) \n"
+                "14) процес ортогоналізації Грамма-Шміта \n"
+                "15) знайти ортогональну проекцію та ортогональне доповнення вектора \n"
+                "16) знайти ортогональне доповнення до лінійної оболонки \n"
+                "17) знайти матрицю спряженого лінійного оператора \n"
 
                 "\n0) вийти \n";
         }
@@ -114,6 +122,24 @@ int main() {
 
             case 2: {
                 if (g_language == 1) {
+                    std::cout << "Enter two vectors as matrix: \n";
+                }
+                else {
+                    std::cout << "Введіть два вектори як матриці: \n";
+                }
+                Matrix vector1, vector2;
+                std::cin >> vector1 >> vector2;
+                if (g_language == 1) {
+                    std::cout << "\nThe solve: \n";
+                }
+                else {
+                    std::cout << "\nРішення: \n";
+                }
+                std::cout << vector1.scalar_product(vector2);
+            } break;
+
+            case 3: {
+                if (g_language == 1) {
                     std::cout << "Enter dimensions of the matrix and this matrix: \n";
                 }
                 else {
@@ -130,7 +156,7 @@ int main() {
                 }
             } break;
 
-            case 3: {
+            case 4: {
                 if (g_language == 1) {
                     std::cout << "Enter dimensions of the matrix and this matrix: \n";
                 }
@@ -150,7 +176,7 @@ int main() {
                 matrix.inverse();
             }; break;
 
-            case 4: {
+            case 5: {
                 if (g_language == 1) {
                     std::cout << "Enter dimensions of the matrix and this matrix: \n";
                 }
@@ -176,7 +202,7 @@ int main() {
                 //}
             }; break;
 
-            case 5: {
+            case 6: {
                 if (g_language == 1) {
                     std::cout << "Enter the vectors of the system as a matrix: \n";
                 }
@@ -188,7 +214,7 @@ int main() {
                 matrix.linear_independence();
             }; break;
 
-            case 6: {
+            case 7: {
                 if (g_language == 1) {
                     std::cout << "Enter the vectors of the system as a matrix: \n";
                 }
@@ -200,7 +226,7 @@ int main() {
                 std::cout << matrix.basis();
             }; break;
 
-            case 7: {
+            case 8: {
                 if (g_language == 1 ) {
                     std::cout << "Enter the coefficients of extended SLAE in the form of a matrix: \n";
                 }
@@ -212,7 +238,7 @@ int main() {
                 matrix.Cramer_Method();
             }; break;
 
-            case 8: {
+            case 9: {
                 if (g_language == 1) {
                     std::cout << "Enter the basis of the first and second subspaces as a matrix: \n";
                 }
@@ -297,7 +323,7 @@ int main() {
                 }
             }
 
-            case 9: {
+            case 10: {
                 if (g_language == 1) {
                     std::cout << "Enter the bases as the matrices from which you want to make the transition: \n";
                 }
@@ -315,7 +341,7 @@ int main() {
                 std::cout << basis1.transiotion_matrix(basis2);
             } break;
 
-            case 10: {
+            case 11: {
                 if (g_language == 1) {
                     std::cout << "Enter coordinats of the vector, as matrix, its basis and transitional basis: \n";
                 }
@@ -342,7 +368,7 @@ int main() {
                 std::cout << vector << std::endl;
             } break;
 
-            case 11: {
+            case 12: {
                 if (g_language == 1) {
                     std::cout << "Enter the matrix of liner operator, its basis and transitional basis: \n";
                 }
@@ -376,7 +402,7 @@ int main() {
                 std::cout << mat_of_lin_oper;
             } break;
 
-            case 12: {
+            case 13: {
                 if (g_language == 1) {
                     std::cout << "Enter the matrix of liner operator, its basis(in pair) and transitional basis(in pair): \n";
                 }
@@ -417,8 +443,103 @@ int main() {
                 std::cout << "\nA' = V^{-1} * A * U; \nA` = \n";
                 std::cout << mat_of_lin_oper;
             } break;
-        }
 
+            case 14: {
+                if (g_language == 1) {
+                    std::cout << "Enter the basis: \n";
+                }
+                else {
+                    std::cout << "Введіть базис: \n";
+                }
+                Matrix basis;
+                std::cin >> basis;
+                if (g_language == 1) {
+                    std::cout << "\nThe solve: \n";
+                }
+                else {
+                    std::cout << "\nРішення: \n";
+                }
+                basis = basis.GrammSchmidt_orthogonalization();
+                if (g_language == 1) {
+                    std::cout << "\nThe orthonormal basis has the form: \n";
+                }
+                else {
+                    std::cout << "\nОртонормований базис має вигляд: \n";
+                }
+                std::cout << basis;
+
+            } break;
+
+            case 15: {
+                if (g_language == 1) {
+                    std::cout << "Enter vector as matrix and its linear shell: \n";
+                }
+                else {
+                    std::cout << "Введіть вектор як матицю та його лінійну оболонку: \n";
+                }
+                Matrix vector, linear_shell;
+                std::cin >> vector >> linear_shell;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the basis of linear shell: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис лінійної оболонки: \n";
+                }
+                linear_shell = linear_shell.basis();
+                std::cout << linear_shell;
+                std::cout << "\nx = pr(x) + ort(x); \npr(x) = x1 * a1 + x2 * a2 + ... + x[i] * a[i]; -";
+                if (g_language == 1) {
+                    std::cout << " where a[i] - it is vector of basis; \n";
+                }
+                else {
+                    std::cout << " де a[i] - вектор базису; \n";
+                }
+                if (g_language == 1) {
+                    std::cout << "\nMultiply scalarly each member of the equation by vectors from the basis, create a system and solve it by the Gaussian method: \n";
+                }
+                else {
+                    std::cout << "\nДомножимо скалярно кожний член рівняння на вектори з базису, створимо систему та вирішимо її методом Гаус: \n";
+                }
+                std::cout << "\n{ x1 * (a1; a1) + x2 * (a2; a1) + ... + x[i] * (a[i]; a1) = (x; a1);"
+                    "\n{ x1 * (a1; a2) + x2 * (a2; a2) + ... + x[i] * (a[i]; a2) = (x; a2);"
+                    "\n{ ................................................................."
+                    "\n{ x1 * (a1; a[i]) + x2 * (a2; a[i]) + ... + x[i] * (a[i]; a[i]) = (x; a[i]); \n";
+                std::vector <Matrix> vectors_of_basis = linear_shell.extract_vectors();
+                std::vector <std::vector <Fraction>> buff(linear_shell.get_j_size() + 1);
+                for (unsigned int i = 0; i < buff.size(); i++) {
+                    for (unsigned int j = 0; j < buff.size(); j++) {
+                        buff[i].push_back(vectors_of_basis[j].scalar_product(vectors_of_basis[i]));
+                    }
+                    buff[i].push_back(vector.scalar_product(vectors_of_basis[i]));
+                }
+                Matrix temp(buff.size() - 1, buff.size(), buff);
+                std::vector <Matrix> ttemp = temp.Gaussian_Method_With_Extract_Answer();
+                if (g_language == 1) {
+                    std::cout << "\nSubstitute the obtained values of the coefficients in pr (x): \npr(x) = \n";
+                }
+                else {
+                    std::cout << "\nПідставимо отримані значення коефіцієнтів у pr(x): \npr(x) = \n";
+                }
+                Matrix prx = ttemp[0].get_matrix()[0][0] * vectors_of_basis[0];
+                std::cout << prx << "\nort(x) = x - pr(x); \nort(x) = \n";
+                for (int i = 1; i <= ttemp[0].get_i_size(); i++) {
+                    prx = prx + ttemp[0].get_matrix()[i][0] * vectors_of_basis[i];
+                }
+                Matrix ortx = vector - prx;
+                std::cout << ortx;
+            } break;
+
+            case 16: {
+                if (g_language == 1) {
+                    std::cout << "Enter the linear shell: \n";
+                }
+                else {
+                    std::cout << "Введіть лінійну оболонку: \n";
+                }
+                Matrix linear_shell;
+                std::cin >> linear_shell;
+            } break;
+        }
         if (g_error) {
             if (g_language == 1) {
                 std::cout << "\nSeems like somewhere occured a mistake. Please, check your input data! \n";

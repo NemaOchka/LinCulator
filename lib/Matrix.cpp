@@ -127,7 +127,7 @@ Matrix Matrix::operator* (const Matrix &a) {
 Matrix operator* (Fraction& a, Matrix& b) {
     Matrix temp(b);
 
-    for (int i = 0; i <= temp.j_size; i++) {
+    for (int i = 0; i <= temp.i_size; i++) {
         for (int j = 0; j <= temp.j_size; j++) {
             temp.matrix[i][j] = a * temp.matrix[i][j];
         }
@@ -962,3 +962,72 @@ Matrix Matrix::transiotion_matrix(Matrix mat) {
 
     return temp;
 }
+
+std::vector <Matrix> Matrix::extract_vectors() {
+    std::vector <Matrix> temp;
+    for (int j = 0; j <= this->j_size; j++) {
+        std::vector <std::vector <Fraction>> buff(i_size + 1);
+        for (int i = 0; i <= this->i_size; i++) {
+            buff[i].push_back(this->matrix[i][j]);
+        }
+        temp.push_back(Matrix(this->i_size, 0, buff));
+    }
+
+    return temp;
+}
+
+Fraction Matrix::scalar_product(const Matrix& mat) {
+    Fraction temp;
+    if (i_size == mat.i_size && j_size == 0 && mat.j_size == 0) {
+        for (int i = 0; i <= i_size; i++) {
+            temp = temp + this->matrix[i][0] * mat.matrix[i][0];
+        }
+    }
+    else {
+        if (g_language == 1) {
+            std::cout << "\nError!! It`s not vectors or dimensions are different. \n";
+        }
+        else {
+            std::cout << "\nПомилка!! Це не вектори або розмірності не співпадають. \n";
+        }
+        g_error = 1;
+    }
+
+    return temp;
+}
+
+Matrix Matrix::GrammSchmidt_orthogonalization() {
+    Matrix temp(*this);
+    std::vector <Matrix> vectors = temp.extract_vectors(), answer;
+    std::vector <std::vector <Fraction>> buff;
+    //{
+    if (g_language == 1) {
+        std::cout << "\nThe general formula is as follows: \n";
+    }
+    else {
+        std::cout << "\nЗагальна формула має такий вигляд: \n";
+    }
+    std::cout << "e[i] = f[i] - ((f[i]; e1) / (e1; e1)) * e1 - ((f[i]; e2) / (e2; e2)) * e2 - ... - ((f[i]; e[1 - 1]) / (e[1 - 1]; e[1 - 1])) * e[i - 1];\n\n";
+    //}
+    for (unsigned int i = 0; i < vectors.size(); i++) {
+        Matrix mat = vectors[i];
+        //{
+        std::cout << "e" << i + 1 << " = \n" << mat;
+        //}
+        for (unsigned int j = 0; j < i; j++) {
+            Fraction coeff = mat.scalar_product(answer[j])/answer[j].scalar_product(answer[j]);
+            mat = mat - coeff * answer[j];
+            //{
+            std::cout << "- " << coeff << " * \n" << answer[j] << std::endl;
+            //}
+        }
+        //{
+        std::cout << "= \n" << mat << std::endl;
+        //}
+        answer.push_back(mat);
+    }
+    temp = Math::get_matrix_from_array_of_vectors(answer);
+
+    return temp;
+}
+

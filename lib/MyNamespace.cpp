@@ -119,3 +119,15 @@ Fraction Math::Determinant_with_explanation(Matrix mat) {
     return determinant;
 }
 //}
+
+Matrix Math::get_matrix_from_array_of_vectors(std::vector <Matrix>& a) {
+    std::vector <std::vector <Fraction>> buff(a[0].get_i_size() + 1);
+    for (unsigned int j = 0; j < a.size(); j++) {
+        for (int i = 0; i <= a[0].get_i_size(); i++) {
+            buff[i].push_back(a[j].get_matrix()[i][0]);
+        }
+    }
+   Matrix temp(buff.size() - 1, a.size() - 1, buff);
+
+    return temp;
+}
