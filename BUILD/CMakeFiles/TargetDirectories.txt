@@ -1,0 +1,4 @@
+/home/nachalnik/Education/Prog/C++/LinCulator/BUILD/CMakeFiles/rebuild_cache.dir
+/home/nachalnik/Education/Prog/C++/LinCulator/BUILD/CMakeFiles/edit_cache.dir
+/home/nachalnik/Education/Prog/C++/LinCulator/BUILD/CMakeFiles/LinCulator.dir
+/home/nachalnik/Education/Prog/C++/LinCulator/BUILD/CMakeFiles/Classes.dir

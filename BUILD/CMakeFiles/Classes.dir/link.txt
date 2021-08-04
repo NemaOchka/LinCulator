@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared -Wl,-soname,libClasses.so -o libClasses.so CMakeFiles/Classes.dir/src/Fraction.cpp.o CMakeFiles/Classes.dir/src/Matrix.cpp.o CMakeFiles/Classes.dir/src/MyNamespace.cpp.o 
