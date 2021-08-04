@@ -1,4 +1,4 @@
-#include "../lib/Classes.h"
+#include <LinCulator/Classes.h>
 
 // Пофіксити:
 // cout матриць в Gaussian_Method() (напвено пов'язано із знаменником, коли чиссельник 0)
