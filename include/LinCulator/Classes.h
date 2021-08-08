@@ -11,6 +11,7 @@
 #include <algorithm>
 
 class Fraction {
+private:
     int numerator;
     int denominator;
 
@@ -40,6 +41,7 @@ public:
 };
 
 class Matrix {
+private:
     int i_size, j_size;
     std::vector <std::vector <Fraction>> matrix;
 

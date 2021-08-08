@@ -537,6 +537,7 @@ std::vector <Matrix> Matrix::Gaussian_Method_With_Extract_Answer() {
 
     return answer;
 }
+
 void Matrix::swap_rows(int a, int b) {
 
     if (a > b) std::swap(a, b);

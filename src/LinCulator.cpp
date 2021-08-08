@@ -8,16 +8,6 @@
 int g_language = 1, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // Ядро і образ лінійного оператора
-    // Перевірка на пряму суму просторів ??????
-    // Добавити роботу з корнями + нормація базису
-
-    // Ортогональне доповнення
-    // Знайти матрицю спряженого оператора
-    // Побудувати ортонормаваний базис із влачних векторів (знаходимо жорданову форму + процес Грамма-Шмітта)
-
-    // Знайти власні числа та власні вектори
-    // Нормальна форма Жодана + пошук функції
     // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
 
 
@@ -54,6 +44,7 @@ int main() {
                 "15) find the orthogonal projection and orthogonal complement of the vector \n"
                 "16) find an orthogonal complement to the linear shell \n"
                 "17) find the matrix of the conjugate linear operator \n"
+                "18) find eigenvectors of a linear operator + normal Jordan form \n"
 
                 "\n0) exit \n";
         }
@@ -76,6 +67,7 @@ int main() {
                 "15) знайти ортогональну проекцію та ортогональне доповнення вектора \n"
                 "16) знайти ортогональне доповнення до лінійної оболонки \n"
                 "17) знайти матрицю спряженого лінійного оператора \n"
+                "18) знайти власні вектори лінійного оператора + нормальна форма Жордана \n"
 
                 "\n0) вийти \n";
         }
@@ -538,6 +530,147 @@ int main() {
                 }
                 Matrix linear_shell;
                 std::cin >> linear_shell;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the basis of the linear shell: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо базис лінійної оболонки: \n";
+                }
+                linear_shell = linear_shell.basis();
+                std::cout << linear_shell;
+                if (g_language == 1) {
+                    std::cout << "\nLet L` be an orthogonal complement to a given space, a[i] - vectors of basis, then: \n";
+                }
+                else {
+                    std::cout << "\nНехай L` - ортогональне доповнення до заданого простору, a[i] - базисні вектори, то: \n";
+                }
+                std::cout << "x є L` => \n"
+                    "{ (x; a1) = 0; \n"
+                    "{ (x; a2) = 0;         =>\n"
+                    "............. \n"
+                    "{ (x; a[i]) = 0; \n"
+                    "\n"
+                    "{ x1 * a1_1 + x2 * a1_2 + ... + x[j] * a1_[j] = 0; \n"
+                    "{ x1 * a2_1 + x2 * a2_2 + ... + x[j] * a2_[j] = 0; \n"
+                    "................................................. \n"
+                    "{ x1 * a[i]_1 + x2 * a[i]_2 + ... + x[j] * a[i]_[j] = 0; \n";
+                linear_shell = linear_shell.transpose();
+                std::vector <std::vector <Fraction>> buff = linear_shell.get_matrix();
+                for (int i = 0; i <= linear_shell.get_i_size(); i++) {
+                    buff[i].push_back(Fraction(0, 1));
+                }
+                linear_shell.set_j_size(linear_shell.get_j_size() + 1);
+                linear_shell.set_matrix(buff);
+                std::vector <Matrix> ort_complement = linear_shell.Gaussian_Method_With_Extract_Answer();
+                if (g_language == 1) {
+                    std::cout << "\nThe orthogonal complement consists of vectors: \n";
+                }
+                else {
+                    std::cout << "\nОртогональне доповнення складається із векторів: \n";
+                }
+                for (unsigned int i = 0; i < ort_complement.size() - 1; i++) {
+                    std::cout << ort_complement[i] << std::endl;
+                }
+            } break;
+
+            case 17: {
+                if (g_language == 1) {
+                    std::cout << "Enter the matrix of the linear operator and its basis: \n";
+                }
+                else {
+                    std::cout << "Введіть матрицю лінійного оператора та його базис: \n";
+                }
+                Matrix mat_of_linear_operator, basis;
+                std::cin >> mat_of_linear_operator >> basis;
+                if (g_language == 1) {
+                    std::cout << "\nFind the matrix of the transition from the canonical basis to this: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо матрицю переходу від канонічного базису до даного: \n";
+                }
+                std::vector <std::vector <Fraction>> buff(basis.get_i_size() + 1);
+                for (int i = 0; i <= basis.get_i_size(); i++) {
+                    for (int j = 0; j <= basis.get_j_size(); j++) {
+                        if (i == j) buff[i].push_back(Fraction(1, 1));
+                        else buff[i].push_back(Fraction(0, 1));
+                    }
+                }
+                Matrix canon_basis(basis.get_i_size(), basis.get_j_size(), buff);
+                basis = canon_basis.transiotion_matrix(basis);
+                std::cout << basis;
+                if (g_language == 1) {
+                    std::cout << "\nLet`s find the inverse matrix of the transition matrix: \n";
+                }
+                else {
+                    std::cout << "\nЗнайдемо обернену матрицю до матриці переходу: \n";
+                }
+                Matrix basis_inverse = basis.inverse();
+                mat_of_linear_operator = basis * mat_of_linear_operator * basis_inverse;
+                std::cout << "\nA_e = U * A * U^{-1}; \nA_e = \n" << mat_of_linear_operator << std::endl;
+                if (g_language == 1) {
+                    std::cout << "\nWe transpose the matrix of the linear operator in the canonical basis: \n";
+                }
+                else {
+                    std::cout << "\nТранспонуємо матрицю лінійного оператора в канонічному базисі: \n";
+                }
+                mat_of_linear_operator = mat_of_linear_operator.transpose();
+                std::cout << "\nA`_e = \n" << mat_of_linear_operator << std::endl;
+                if (g_language == 1) {
+                    std::cout << "\nThe matrix of the conjugate operator is sought by the formula: \n";
+                }
+                else {
+                    std::cout << "\nМатриця спряженого оператора шукається за формулою: \n";
+                }
+                std::cout << "\nA`_f = U^{-1} * A`_e * U; \nA`_f = \n";
+                mat_of_linear_operator = basis_inverse * mat_of_linear_operator * basis;
+                std::cout << mat_of_linear_operator;
+
+            } break;
+
+            case 18: {
+                if (g_language == 1) {
+                    std::cout << "Enter the matrix of the linear operator: \n";
+                }
+                else {
+                    std::cout << "Введіть матрицю лінійного оператора: \n";
+                }
+                Matrix mat_of_linear_operator;
+                std::cin >> mat_of_linear_operator;
+                if (g_language == 1) {
+                    std::cout << "\nEnter the number of eigenvalues and the eigenvalues themselves: \n";
+                }
+                else {
+                    std::cout << "\nВведіть кількість власних чисел та самі власні числа: \n";
+                }
+                int amount_of_eigenvalues;
+                std::cin >> amount_of_eigenvalues;
+                std::vector <Fraction> eigenvalues;
+                for (int i = 0; i < amount_of_eigenvalues; i++) {
+                    Fraction buff;
+                    std::cin >> buff;
+                    eigenvalues.push_back(buff);
+                }
+                std::vector <std::vector <Fraction>> buff = mat_of_linear_operator.get_matrix();
+                for (int i = 0; i <= mat_of_linear_operator.get_i_size(); i++) {
+                    buff[i].push_back(Fraction(0, 1));
+                }
+                mat_of_linear_operator.set_j_size(mat_of_linear_operator.get_j_size() + 1);
+                mat_of_linear_operator.set_matrix(buff);
+                for (int i = 0; i < amount_of_eigenvalues; i++) {
+                    if (g_language == 1) {
+                        std::cout << "\nLet`s find eigenvector for eigenvalue " << eigenvalues[i] << ": \n";
+                    }
+                    else {
+                        std::cout << "\nЗнайдемо власний вектор для власного числа " << eigenvalues[i] << ": \n";
+                    }
+                    std::vector <std::vector <Fraction>> ttemp = buff;
+                    for (int j = 0; j <= mat_of_linear_operator.get_i_size(); j++) {
+                        ttemp[j][j] = ttemp[j][j] - eigenvalues[i];
+                    }
+                    Matrix temp(mat_of_linear_operator.get_i_size(), mat_of_linear_operator.get_j_size(), ttemp);
+                    temp.Gaussian_Method_With_Extract_Answer();
+                }
+
             } break;
         }
         if (g_error) {
