@@ -4,11 +4,12 @@
 // cout матриць в Gaussian_Method() (напвено пов'язано із знаменником, коли чиссельник 0)
 // PDE (core dumped) помилка при великих числах - Метод Гауса (long long int у Fraction)
 // Всі g_error поміняти на assert аьо на exit("");
+// Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
+// Пошук НЖФ не завжди коректний
 
 int g_language = 1, g_error = 0;                                     // if somewhere occure error, the value will be changed to 1 and the wil be report about mistake in the end
 
 int main() {
-    // Розв'язок СЛАР методом Крамара + загальний розв'язоу системи
 
 
     system("clear");
@@ -44,7 +45,7 @@ int main() {
                 "15) find the orthogonal projection and orthogonal complement of the vector \n"
                 "16) find an orthogonal complement to the linear shell \n"
                 "17) find the matrix of the conjugate linear operator \n"
-                "18) find eigenvectors of a linear operator + normal Jordan form \n"
+                "18) find eigenvectors of a linear operator + normal Jordan form (the answer may be incorrect :D)\n"
 
                 "\n0) exit \n";
         }
@@ -67,7 +68,7 @@ int main() {
                 "15) знайти ортогональну проекцію та ортогональне доповнення вектора \n"
                 "16) знайти ортогональне доповнення до лінійної оболонки \n"
                 "17) знайти матрицю спряженого лінійного оператора \n"
-                "18) знайти власні вектори лінійного оператора + нормальна форма Жордана \n"
+                "18) знайти власні вектори лінійного оператора + нормальна форма Жордана (можливо відповідь неправильна :D) \n"
 
                 "\n0) вийти \n";
         }
@@ -645,6 +646,7 @@ int main() {
                 int amount_of_eigenvalues;
                 std::cin >> amount_of_eigenvalues;
                 std::vector <Fraction> eigenvalues;
+                std::vector <Matrix> eigenvectors;
                 for (int i = 0; i < amount_of_eigenvalues; i++) {
                     Fraction buff;
                     std::cin >> buff;
@@ -667,10 +669,57 @@ int main() {
                     for (int j = 0; j <= mat_of_linear_operator.get_i_size(); j++) {
                         ttemp[j][j] = ttemp[j][j] - eigenvalues[i];
                     }
-                    Matrix temp(mat_of_linear_operator.get_i_size(), mat_of_linear_operator.get_j_size(), ttemp);
-                    temp.Gaussian_Method_With_Extract_Answer();
+                    mat_of_linear_operator.set_matrix(ttemp);
+                    std::vector <Matrix> buff = mat_of_linear_operator.Gaussian_Method_With_Extract_Answer();
+                    for (unsigned int i = 0; i < buff.size() - 1; i++) {
+                        eigenvectors.push_back(buff[i]);
+                    }
                 }
-
+                std::vector <std::vector <Fraction>> ttemp;
+                for (unsigned int i = 0; i < eigenvectors.size(); i++) {
+                    std::vector <Fraction> temp;
+                    for (int j = 0; j <= eigenvectors[0].get_i_size(); j++) {
+                        if (i == (unsigned)j) temp.push_back(eigenvalues[i]);
+                        else temp.push_back(Fraction(0, 1));
+                    }
+                    ttemp.push_back(temp);
+                }
+                mat_of_linear_operator = mat_of_linear_operator.main_matrix();
+                Matrix attach_vec = eigenvectors[eigenvectors.size() - 1];
+                for (int i = eigenvectors.size() - 1; i < mat_of_linear_operator.get_i_size(); i++) {
+                    if (g_language == 1) {
+                        std::cout << "\nFind the attached vector to: \n" << attach_vec << std::endl;
+                    }
+                    else {
+                        std::cout << "\nЗнайдемо приєднаний вектор до: \n" << attach_vec << std::endl;
+                    }
+                    std::vector <std::vector <Fraction>> tmp = mat_of_linear_operator.get_matrix();
+                    for (int i = 0; i <= mat_of_linear_operator.get_i_size(); i++) {
+                        tmp[i].push_back(attach_vec.get_matrix()[i][0]);
+                    }
+                    Matrix tp(mat_of_linear_operator.get_i_size(), mat_of_linear_operator.get_j_size() + 1, tmp);
+                    std::vector <Matrix> buff = tp.Gaussian_Method_With_Extract_Answer();
+                    eigenvectors.push_back(buff[buff.size() - 2]);
+                    attach_vec = buff[buff.size() - 2];
+                    for (unsigned int i = eigenvectors.size() - 1; i < eigenvectors.size(); i++) {
+                        std::vector <Fraction> temp;
+                        for (int j = 0; j <= eigenvectors[0].get_i_size(); j++) {
+                            if ((signed)i - 1 == j) temp.push_back(Fraction(1, 1));
+                            else if ((signed)i == j) temp.push_back(eigenvalues[eigenvalues.size() - 1]);
+                            else temp.push_back(Fraction(0, 1));
+                        }
+                        ttemp.push_back(temp);
+                    }
+                }
+                Matrix basis(ttemp.size() - 1, ttemp[0].size() - 1, ttemp);
+                basis = basis.transpose();
+                mat_of_linear_operator = Math::get_matrix_from_array_of_vectors(eigenvectors);
+                if (g_language == 1) {
+                    std::cout << "\nSo, normal form of Jordan at the base \n" << mat_of_linear_operator << "\nhas the following form: \n" << basis;
+                }
+                else {
+                    std::cout << "\nОтже, нормальна форма Жордана в базисі \n" << mat_of_linear_operator << "\nмає такий вигляд: \n" << basis;
+                }
             } break;
         }
         if (g_error) {
