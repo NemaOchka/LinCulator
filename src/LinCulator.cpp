@@ -13,7 +13,19 @@ int main() {
 
 
     system("clear");
-    std::cout << "Choose youe language: \nEN - 1 \nUA - 2 \n";
+    std::cout << "\e[9;1t";
+    std::cout <<
+        "        /                   ______                                                           \n"
+        "       /                   /      \\              /|                                         \n"
+        "      /                   /        \\            / |              |                          \n"
+        "     /       |  |\\    |  |            |       |   |      /\\    __|__   ______    __        \n"
+        "    /        |  | \\   |  |            |       |   |     /  \\     |    /      \\  /  \\     \n"
+        "   /         |  |  \\  |   \\           |       |   |    /____\\    |    |      |  |__/      \n"
+        "  /          |  |   \\ |    \\        | \\       /   |   /      \\   |    |      |  | \\     \n"
+        " /_______|   |  |    \\|     \\______/   \\_____/    |  /        \\   \\_   \\____/   |  \\  \n"
+        "                                                                                             \n";
+
+    std::cout << "Choose your language: \nEN - 1 \nUA - 2 \n";
     while (true) {
         std::cin >> g_language;
         if (std::cin.fail() || (g_language != 1 && g_language != 2)) {
@@ -23,6 +35,29 @@ int main() {
         }
         else break;
     }
+    std::system("clear");
+
+    if (g_language == 1) {
+        std::cout << "\n\tLinCulator is a primitive calculator for linear algebra designed to learn about trivial problems and speed up the process when working with more sparse linear calculations. "
+            "To work, simply select and enter the task number in the next section, enter the input data and get the result. \\\\ Note: in order to enter a matrix, you must first enter its dimension, then the matrix itself"
+            "\n\tIf after receiving the message you receive a message such as 'Looks like an error occurred somewhere, check the correctness of data entry!', then at some stage of the calculations an error occurred. In this case, inspect the output "
+            "programs and find out exactly where the error first occurred (all predicted errors are displayed in the console), check the calculations and the correctness of data entry, try again. It is possible that the problem cannot be solved. "
+            "\n\tQuestions, suggestions, error messages can be left here: https://github.com/NemaOchka/LinCulator. If someone wants to use this program for their own purposes, then all the additions to the methods of the classes that display the process "
+            "works (except those that report a failure) can be removed by deleting all the code located between \\\\ {... \\\\} and removing the Ukrainian annotations. "
+            "\n\tThe author is not responsible for the correctness of the result of the problem. \n"
+            "\nTo continue, press ENTER ... \n";
+    }
+    else {
+        std::cout << "\n\tLinCulator - це примітивний калькулятор для лінійної алгебри призначений для ознайомлення з тривіальними задачами та прискорення процесу при роботі з більш скадними лінійними обрахунками. "
+            "Для роботи достатньо обрати та ввести номер задачі в наступному розділі, ввести вхідні дані та отримати результа. \\\\ Примітка: для того, щоб ввести матрицю спершу потрібно ввести її розмірність, після чого саму матрицю "
+            "\n\tЯкщо після завершення роботи ви отримаєте повідомлення типу ʼВиглядає ніби десь трапилась помилка, перегляньте коректність вводу данних!ʼ, то на якомусь із етапів розхунків трапилась помилка. В такому разі огляньте вивід "
+            "програми та виявідь, де саме спершу трапилась помилка (всі передбачені помилки виводяться в консоль), перевірте обрахунки та корекність вводу даних, повторіть спробу. Цілком можливо, що задачу не можливо вирішити. "
+            "\n\tПитання, пропозиції, повідомлення про помилки залишати тут: https://github.com/NemaOchka/LinCulator. У разі якщо хтось захоче використати цю програму у своїх цілях, то всі доповнення в методах класів, що виводять процес "
+            "роботи (крім тих, що інформують про збій) можна вилучити, видаливши весь код розташований між \\\\{ ... \\\\} та забравши українські анотації. "
+            "\n\tАвтор не несе відповідальності за коректність результату задачі. \n"
+            "\nЩоб продовжити, натисніть ENTER ... \n";
+    }
+    std::system("read");
     std::system("clear");
 
     while (1) {
@@ -76,7 +111,7 @@ int main() {
         int task;
         while (true) {
             std::cin >> task;
-            if (std::cin.fail()) {
+            if (std::cin.fail() || task < 0 || task > 18) {
                 if (g_language == 1) {
                     std::cout << "Incorrect value!! Try one more time. \n";
                 }
@@ -165,7 +200,7 @@ int main() {
                     std::cout << "\nРішення: \n";
                 }
                 std::cout << "\nA = \n";
-                std::cout << matrix;
+                std::cout << matrix << std::endl;
                 matrix.inverse();
             }; break;
 

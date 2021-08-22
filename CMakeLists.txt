@@ -11,7 +11,7 @@ list(APPEND headers_path "${CMAKE_CURRENT_SOURCE_DIR}/include")
 #==================================================
 #SET SOURCES
 #==================================================
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 set(sources_path ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(exec_source
