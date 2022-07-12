@@ -11,7 +11,6 @@ int g_language = 1, g_error = 0;                                     // if somew
 
 int main() {
 
-
     system("clear");
     std::cout << "\e[9;1t";
     std::cout <<
